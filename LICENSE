@@ -1,0 +1,12 @@
+The project itself (See Sources) is covered by the zlib-style license.
+A copy of the license is included with each .cpp file.
+
+https://en.wikipedia.org/wiki/Zlib_License
+
+This permissive license was chosen to be the same as SDL2, which is also zlib license.
+
+https://www.libsdl.org/license.php
+
+
+Licenses for Third party sources are as per the original project - See those files.
+
