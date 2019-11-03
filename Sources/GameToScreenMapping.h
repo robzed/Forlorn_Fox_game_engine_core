@@ -50,6 +50,8 @@ int GetWindowHeight();
 
 float GetWindowDiagonalInches();
 
+void SetWindowTitle(const std::string title);
+
 bool CreateGameWindow();
 SDL_Window* GetGameWindow();
 

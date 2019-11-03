@@ -244,6 +244,10 @@ bool ToggleFullscreen()
 	return true;
 }
 
+void SetWindowTitle(const std::string title)
+{
+	SDL_SetWindowTitle(game_window, title.c_str());
+}
 
 bool CreateGameWindow()
 {
@@ -264,7 +268,7 @@ bool CreateGameWindow()
 
 
 	// Changed title for Mac version from NULL. Hopefully iPhone won't mind...
-	game_window = SDL_CreateWindow("Escape",
+	game_window = SDL_CreateWindow("ForlornFox Engine",
 					 window_x_start, window_y_start,
 					 window_width_in_screen_coords, window_height_in_screen_coords,
 					 flags

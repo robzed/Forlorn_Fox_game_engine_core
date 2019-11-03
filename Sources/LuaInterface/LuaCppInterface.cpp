@@ -688,6 +688,7 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     .addFunction("SDL_Delay", SDL_Delay)
     .addFunction("SDL_GetPerformanceCounter", SDL_GetPerformanceCounter)
     .addFunction("SDL_GetPerformanceFrequency", SDL_GetPerformanceFrequency)
+    .addFunction("SetWindowTitle", SetWindowTitle)
 
     // more SDL stuff
     .addFunction("SDL_GetModState", SDL_GetModState_helper)
