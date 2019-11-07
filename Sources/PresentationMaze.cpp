@@ -496,6 +496,7 @@ void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_col
 {
 	gr.set_fg_colour(maze_foreground[map_line][map_column]);
 	gr.set_bg_fullcolour(maze_background[map_line][map_column]);
+
 	(maze_draw_list[map_line][map_column]).render(gr, screen_line, screen_column, start_layer, end_layer);
 }
 

@@ -212,7 +212,11 @@ void MazeDrawList::render(MyGraphics& gr, pos_t line, pos_t column, int start_la
 	else
 		gr.set_bg_opaque();
 
-	while(dl != maze_draw_list.end())
+	if(dl == maze_draw_list.end())
+	{
+		gr.print(line, column, 0x20, 0, 1, 1);
+	}
+	else while(dl != maze_draw_list.end())
 	{
 		MazeDrawListElement* mdl = *dl;
 
@@ -222,6 +226,11 @@ void MazeDrawList::render(MyGraphics& gr, pos_t line, pos_t column, int start_la
 
 		if(layer >= start_layer)
 		{
+			if(mdl->get_cell_width()==0 || mdl->get_cell_height()==0)
+			{
+				Utilities::debugMessage("maze draw list element with 0 size at %f %f\n", line, column);
+			}
+
 			gr.print(line, column, mdl->get_glyph(), mdl->get_angle(), mdl->get_cell_width(), mdl->get_cell_height());
 		}
 

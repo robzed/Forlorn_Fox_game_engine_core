@@ -83,7 +83,7 @@ public:
 	void print_selected(MyGraphics* gr, int start_line, int lines_to_print);
 	
 	int get_glyph(int line, int column);
-	void set_glyph(int line, int column, int value, int layer = 0, int cell_width = 0, int cell_height = 0);
+	void set_glyph(int line, int column, int value, int layer = 0, int cell_width = 1, int cell_height = 1);
 	
 	void set_rotation(int line, int column, double angle);
 

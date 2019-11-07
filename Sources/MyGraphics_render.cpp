@@ -446,8 +446,7 @@ void MyGraphics_render::set_wrap_limits(double line_start, double line_end, doub
 void MyGraphics_render::drawBlank(int x, int y, int width, int height, const SDL_Colour& colour)
 {
     SDL_Rect rect = { x, y, width, height };
-    SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b,
-    		colour.a);
+    SDL_SetRenderDrawColor(renderer, colour.r, colour.g, colour.b, colour.a);
     SDL_RenderFillRect(renderer, &rect);
 }
 
