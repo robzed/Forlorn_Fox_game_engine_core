@@ -793,6 +793,7 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     //.addFunction("print_selected", &PresentationMaze::print_selected)
     .addFunction("set_rect", &PresentationMaze::set_rect)
     .addFunction("zoom", &PresentationMaze::zoom)
+	.addFunction("set_render_option", &PresentationMaze::set_render_option)
     .endClass()
     
 
@@ -1143,6 +1144,7 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
 			.addFunction("GetAvailableLevelWidth", &PresentationMaze::GetAvailableLevelWidth)
 			.addFunction("GetAvailableLevelHeight", &PresentationMaze::GetAvailableLevelHeight)
 			.addFunction("GetCellSize", &PresentationMaze::GetCellSize)
+			.addFunction("set_render_option", &PresentationMaze::set_render_option)
 		.endClass()
 
 		.beginClass <DrawList> ("DrawList")

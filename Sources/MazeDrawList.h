@@ -61,8 +61,17 @@ public:
 
 	void check_integrity();
 
+	enum render_option
+	{
+		do_not_render_empty_draw_list,
+		render_empty_draw_list_as_space,
+	};
+
+	void set_render_option(render_option ro);
+
 private:
 	std::list<MazeDrawListElement*> maze_draw_list;
+	bool _render_empty_draw_list_as_space;
 };
 
 

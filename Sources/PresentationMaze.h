@@ -118,6 +118,8 @@ public:
 	double GetAvailableLevelHeight();
 	int GetCellSize();
 
+	void set_render_option(unsigned int ro);
+
 
 private:
 	void render_map_data(MyGraphics& gr, int map_line, int map_column, pos_t screen_line, pos_t screen_column, int start_layer, int end_layer);

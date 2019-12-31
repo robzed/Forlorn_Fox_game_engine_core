@@ -186,6 +186,7 @@ bool MazeDrawListAnimatedElement::setInterval(double seconds)
 
 MazeDrawList::MazeDrawList()
 : mdl_magic(MDL_MAGIC)
+, _render_empty_draw_list_as_space(true)
 {
 }
 
@@ -202,6 +203,20 @@ MazeDrawList::~MazeDrawList()
     mdl_magic = 0;
 }
 
+void MazeDrawList::set_render_option(MazeDrawList::render_option ro)
+{
+	switch(ro)
+	{
+		case do_not_render_empty_draw_list:
+			_render_empty_draw_list_as_space = false;
+			break;
+
+		case render_empty_draw_list_as_space:
+			_render_empty_draw_list_as_space = true;
+			break;
+	}
+}
+
 void MazeDrawList::render(MyGraphics& gr, pos_t line, pos_t column, int start_layer, int end_layer, bool overdraw)
 {
 
@@ -212,7 +227,7 @@ void MazeDrawList::render(MyGraphics& gr, pos_t line, pos_t column, int start_la
 	else
 		gr.set_bg_opaque();
 
-	if(dl == maze_draw_list.end())
+	if(_render_empty_draw_list_as_space && dl == maze_draw_list.end())
 	{
 		gr.print(line, column, 0x20, 0, 1, 1);
 	}
@@ -226,10 +241,12 @@ void MazeDrawList::render(MyGraphics& gr, pos_t line, pos_t column, int start_la
 
 		if(layer >= start_layer)
 		{
+			/*
 			if(mdl->get_cell_width()==0 || mdl->get_cell_height()==0)
 			{
 				Utilities::debugMessage("maze draw list element with 0 size at %f %f\n", line, column);
 			}
+			*/
 
 			gr.print(line, column, mdl->get_glyph(), mdl->get_angle(), mdl->get_cell_width(), mdl->get_cell_height());
 		}

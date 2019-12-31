@@ -491,6 +491,16 @@ DrawList* PresentationMaze::get_mobs_draw_list()
 	return &mobs_draw_list;
 }
 
+void PresentationMaze::set_render_option(unsigned int ro)
+{
+	for(int line = 0; line < MazeConstants::maze_height_max; line++)
+	{
+		for(int column = 0; column < MazeConstants::maze_width_max; column++)
+		{
+			maze_draw_list[line][column].set_render_option((MazeDrawList::render_option)ro);
+		}
+	}
+}
 
 void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_column, pos_t screen_line, pos_t screen_column, int start_layer, int end_layer)
 {
@@ -540,6 +550,7 @@ void PresentationMaze::set_glyph(int line, int column, int glyph, int layer, int
 	current_maze_element_pointers[line][column]->update_layer(layer);
 	current_maze_element_pointers[line][column]->set_cell_width(cell_width);
 	current_maze_element_pointers[line][column]->set_cell_height(cell_height);
+
 }
 
 void PresentationMaze::set_rotation(int line, int column, double angle)
