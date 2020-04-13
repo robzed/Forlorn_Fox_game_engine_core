@@ -133,7 +133,8 @@ static const int cell_size_lower_limit = 8;
 // 0.69 - added multiplayer status draw list
 // 0.70 - multitouch
 // 0.71 - high_priority mouse target
-#define FORLORN_FOX_ENGINE_VERSION 0.71
+// 0.72 - Added performance counter access that is Lua friendly
+#define FORLORN_FOX_ENGINE_VERSION 0.72
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif

@@ -529,6 +529,19 @@ private:
     sha512_state state;
 };
 
+class PerformanceFrequencyCounter {
+public:
+   PerformanceFrequencyCounter() { t = SDL_GetPerformanceCounter(); }
+   double result_of_subtract_arg(PerformanceFrequencyCounter* p) {
+      if(p)
+      {
+         return static_cast<double>(t - p->t)/SDL_GetPerformanceFrequency();
+      }
+      return 0.0;
+      }
+private:
+   Uint64 t;
+};
 
 //
 // CRC32 function
@@ -688,6 +701,11 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     .addFunction("SDL_Delay", SDL_Delay)
     .addFunction("SDL_GetPerformanceCounter", SDL_GetPerformanceCounter)
     .addFunction("SDL_GetPerformanceFrequency", SDL_GetPerformanceFrequency)
+    .beginClass<PerformanceFrequencyCounter>("PerformanceFrequencyCounter")
+      .addConstructor <void (*) (void)> ()
+      .addFunction("result_of_subtract_arg", &PerformanceFrequencyCounter::result_of_subtract_arg)
+    .endClass()
+
     .addFunction("SetWindowTitle", SetWindowTitle)
 
     // more SDL stuff
