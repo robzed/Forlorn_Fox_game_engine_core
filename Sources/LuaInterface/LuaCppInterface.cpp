@@ -154,7 +154,7 @@ public:
         {
             Utilities::fatalError("Trying to destroy thread still running");
         }
-        
+
     }
     //bool failed()
     //{
@@ -209,7 +209,7 @@ private:
             }
             else
             {
-                Utilities::fatalError("run_thread_function failed to call function");
+                Utilities::fatalError("run_thread_function failed to call function %s", obj->lua_function_name.c_str());
             }
         }
         else

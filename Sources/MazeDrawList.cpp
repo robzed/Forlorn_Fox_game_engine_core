@@ -229,7 +229,8 @@ void MazeDrawList::render(MyGraphics& gr, pos_t line, pos_t column, int start_la
 
 	if(_render_empty_draw_list_as_space && dl == maze_draw_list.end())
 	{
-		gr.print(line, column, 0x20, 0, 1, 1);
+		//gr.print(line, column, 0x20, 0, 1, 1);
+		gr.print(line, column, 0xEE00, 0, 1, 1);
 	}
 	else while(dl != maze_draw_list.end())
 	{

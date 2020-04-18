@@ -113,12 +113,12 @@ void PresentationMaze::delete_all_cmep()
 
 double PresentationMaze::GetAvailableLevelWidth()
 {
-	return available_level_width;
+	return available_level_width * 0.75;
 }
 
 double PresentationMaze::GetAvailableLevelHeight()
 {
-	return available_level_height;
+	return available_level_height * 0.866;
 }
 
 int PresentationMaze::GetCellSize()
@@ -472,7 +472,8 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
 
         while(map_start_column <= current_column_max and map_start_column >= 0)
 		{
-            render_map_data(*gr, map_start_line, map_start_column, line, column, 0, view_layer[map_start_line][map_start_column]);
+            pos_t render_line = line + ((map_start_column % 2) ? 0.5 : 0);
+        	render_map_data(*gr, map_start_line, map_start_column, render_line*0.866, column*0.75, 0, view_layer[map_start_line][map_start_column]);
             column ++;
             map_start_column ++;
         }
@@ -507,7 +508,7 @@ void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_col
 	gr.set_fg_colour(maze_foreground[map_line][map_column]);
 	gr.set_bg_fullcolour(maze_background[map_line][map_column]);
 
-	(maze_draw_list[map_line][map_column]).render(gr, screen_line, screen_column, start_layer, end_layer);
+	(maze_draw_list[map_line][map_column]).render(gr, screen_line, screen_column, start_layer, end_layer, true);
 }
 
 
@@ -586,12 +587,12 @@ void PresentationMaze::set_offset(pos_t line, pos_t column)
 
 int PresentationMaze::width()
 {
-	return current_column_max+1;
+	return ((current_column_max+1) * 0.75);		// not yet right
 }
 
 int PresentationMaze::height()
 {
-	return current_line_max+1;
+	return ((current_line_max+1) * 0.866);		// not yet right
 }
 
 void PresentationMaze::set_wall_transparency(int line, int column, unsigned int direction_map)
