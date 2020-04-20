@@ -111,7 +111,7 @@ void PresentationMaze::delete_all_cmep()
 	}
 }
 
-const auto hex_horizontal_offset = std::sin(60 / 180.0) * ((double) M_PI);   // ~0.866
+const auto hex_horizontal_offset = std::sin((60 / 180.0) * ((double) M_PI));   // ~0.866
 const auto hex_vertical_offset = 0.75; // std::cos(60);  // = 0.5
 
 double PresentationMaze::GetAvailableLevelWidth()
