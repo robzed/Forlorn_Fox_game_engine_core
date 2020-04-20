@@ -111,14 +111,17 @@ void PresentationMaze::delete_all_cmep()
 	}
 }
 
+const auto hex_horizontal_offset = std::sin(60 / 180.0) * ((double) M_PI);   // ~0.866
+const auto hex_vertical_offset = 0.75; // std::cos(60);  // = 0.5
+
 double PresentationMaze::GetAvailableLevelWidth()
 {
-	return available_level_width * 0.75;
+	return available_level_width * hex_vertical_offset;
 }
 
 double PresentationMaze::GetAvailableLevelHeight()
 {
-	return available_level_height * 0.866;
+	return available_level_height * hex_horizontal_offset;
 }
 
 int PresentationMaze::GetCellSize()
@@ -473,7 +476,7 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
         while(map_start_column <= current_column_max and map_start_column >= 0)
 		{
             pos_t render_line = line + ((map_start_column % 2) ? 0.5 : 0);
-        	render_map_data(*gr, map_start_line, map_start_column, render_line*0.866, column*0.75, 0, view_layer[map_start_line][map_start_column]);
+        	render_map_data(*gr, map_start_line, map_start_column, render_line*hex_horizontal_offset, column*hex_vertical_offset, 0, view_layer[map_start_line][map_start_column]);
             column ++;
             map_start_column ++;
         }
@@ -587,12 +590,12 @@ void PresentationMaze::set_offset(pos_t line, pos_t column)
 
 int PresentationMaze::width()
 {
-	return ((current_column_max+1) * 0.75);		// not yet right
+	return ((current_column_max+1) * hex_vertical_offset);		// not yet right
 }
 
 int PresentationMaze::height()
 {
-	return ((current_line_max+1) * 0.866);		// not yet right
+	return ((current_line_max+1) * hex_horizontal_offset);		// not yet right
 }
 
 void PresentationMaze::set_wall_transparency(int line, int column, unsigned int direction_map)
