@@ -152,7 +152,9 @@ public:
 //        if(thread)
         if(running)
         {
-            Utilities::fatalError("Trying to destroy thread still running");
+           std::string s = "Trying to destroy thread still running - ";
+           s += GetThreadName();
+           Utilities::fatalError(s);
         }
         
     }
@@ -532,6 +534,7 @@ private:
 class PerformanceFrequencyCounter {
 public:
    PerformanceFrequencyCounter() { t = SDL_GetPerformanceCounter(); }
+   void set_now() { t = SDL_GetPerformanceCounter(); }
    double result_of_subtract_arg(PerformanceFrequencyCounter* p) {
       if(p)
       {
@@ -703,6 +706,7 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     .addFunction("SDL_GetPerformanceFrequency", SDL_GetPerformanceFrequency)
     .beginClass<PerformanceFrequencyCounter>("PerformanceFrequencyCounter")
       .addConstructor <void (*) (void)> ()
+      .addFunction("set_now", &PerformanceFrequencyCounter::set_now)
       .addFunction("result_of_subtract_arg", &PerformanceFrequencyCounter::result_of_subtract_arg)
     .endClass()
 
