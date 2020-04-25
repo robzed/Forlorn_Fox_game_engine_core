@@ -152,7 +152,9 @@ public:
 //        if(thread)
         if(running)
         {
-            Utilities::fatalError("Trying to destroy thread still running");
+           std::string s = "Trying to destroy thread still running - ";
+           s += GetThreadName();
+           Utilities::fatalError(s);
         }
 
     }
@@ -532,6 +534,7 @@ private:
 class PerformanceFrequencyCounter {
 public:
    PerformanceFrequencyCounter() { t = SDL_GetPerformanceCounter(); }
+   void set_now() { t = SDL_GetPerformanceCounter(); }
    double result_of_subtract_arg(PerformanceFrequencyCounter* p) {
       if(p)
       {
@@ -665,6 +668,15 @@ int SDL_SetTextureBlendMode_helper(SDL_Texture*  texture, int blendMode)
     return SDL_SetTextureBlendMode(texture, static_cast<SDL_BlendMode>(blendMode));
 }
 
+double SDL_GetPerformanceCounter_helper()
+{
+   return SDL_GetPerformanceCounter();
+}
+double SDL_GetPerformanceFrequency_helper()
+{
+   return SDL_GetPerformanceFrequency();
+}
+
 // ------------------------------------------------------------------------------
 //
 // We bind all the Forlorn Fox standard C++ classes in here, rather than spread them out over the project.
@@ -699,10 +711,11 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     .addFunction("SDL_GetPlatform", SDL_GetPlatform)
     .addFunction("SDL_GetCPUCount", SDL_GetCPUCount)
     .addFunction("SDL_Delay", SDL_Delay)
-    .addFunction("SDL_GetPerformanceCounter", SDL_GetPerformanceCounter)
-    .addFunction("SDL_GetPerformanceFrequency", SDL_GetPerformanceFrequency)
+    .addFunction("SDL_GetPerformanceCounter", SDL_GetPerformanceCounter_helper)
+    .addFunction("SDL_GetPerformanceFrequency", SDL_GetPerformanceFrequency_helper)
     .beginClass<PerformanceFrequencyCounter>("PerformanceFrequencyCounter")
       .addConstructor <void (*) (void)> ()
+      .addFunction("set_now", &PerformanceFrequencyCounter::set_now)
       .addFunction("result_of_subtract_arg", &PerformanceFrequencyCounter::result_of_subtract_arg)
     .endClass()
 
