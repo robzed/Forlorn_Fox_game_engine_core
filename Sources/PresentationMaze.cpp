@@ -590,12 +590,12 @@ void PresentationMaze::set_offset(pos_t line, pos_t column)
 
 int PresentationMaze::width()
 {
-	return ((current_column_max+1) * hex_vertical_offset);		// not yet right
+	return ((current_column_max+1));// * hex_vertical_offset);		// not yet right
 }
 
 int PresentationMaze::height()
 {
-	return ((current_line_max+1) * hex_horizontal_offset);		// not yet right
+	return ((current_line_max+1));// * hex_horizontal_offset);		// not yet right
 }
 
 void PresentationMaze::set_wall_transparency(int line, int column, unsigned int direction_map)
