@@ -69,11 +69,13 @@ MySoundManager::MySoundManager()
 		else
 		{
 			Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
-			SDL_Log("Opened audio at %d Hz %d bit%s %s %d bytes audio buffer\n", audio_rate,
+         // don't print this from C++ ... added function gulp.sound.print_info() in Lua.
+			/*SDL_Log("Opened audio at %d Hz %d bit%s %s %d bytes audio buffer\n", audio_rate,
 				(audio_format&0xFF),
 				(SDL_AUDIO_ISFLOAT(audio_format) ? " (float)" : ""),
 				(audio_channels > 2) ? "surround" : (audio_channels > 1) ? "stereo" : "mono",
 				audio_buffers);
+          */
 			audio_open = 1;
 		}
     }

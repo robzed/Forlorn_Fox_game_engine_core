@@ -676,6 +676,10 @@ double SDL_GetPerformanceFrequency_helper()
 {
    return SDL_GetPerformanceFrequency();
 }
+bool SDL_AUDIO_ISFLOAT_helper(SDL_AudioFormat val)
+{
+   return SDL_AUDIO_ISFLOAT(val);
+}
 
 // ------------------------------------------------------------------------------
 //
@@ -727,7 +731,8 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     .addFunction("SDL_GetError", SDL_GetError)
     .addFunction("SDL_RenderClear", SDL_RenderClear)
     .addFunction("SDL_RenderPresent", SDL_RenderPresent)
-    
+    .addFunction("SDL_AUDIO_ISFLOAT", SDL_AUDIO_ISFLOAT_helper)
+   
 	.addFunction("map_transform", MapUtils::map_transform)
     .addCFunction("calculate_crc32", calculate_crc32)
     .addCFunction("inflate", inflate)
@@ -1063,14 +1068,42 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
             .addFunction("get_CLI", &LuaMain::get_CLI)
 		.endClass ()
 
+      .beginClass<Mix_Music>("Mix_Music")
+      .endClass()
+      .beginClass<Mix_Chunk>("Mix_Chunk")
+         .addData("allocated",&Mix_Chunk::allocated)
+         .addData("abuf",&Mix_Chunk::abuf)
+         .addData("alen",&Mix_Chunk::alen)
+         .addData("volume",&Mix_Chunk::volume)
+      .endClass()
+
+   
 		.beginClass <MySoundManager> ("MySoundManager")
+         .addFunction("get_sample_frequency", &MySoundManager::get_sample_frequency)
+         .addFunction("load_sound", &MySoundManager::load_sound)
+         .addFunction("add_mono_sound", &MySoundManager::add_mono_sound)
+         //.addFunction("add_stereo_sound", &MySoundManager::add_stereo_sound)
+         .addFunction("play_sound", &MySoundManager::play_sound)
 			.addFunction("play_music", &MySoundManager::play_music)
-			.addFunction("play_sound", &MySoundManager::play_sound)
-			.addFunction("add_mono_sound", &MySoundManager::add_mono_sound)
-			//.addFunction("add_stereo_sound", &MySoundManager::add_stereo_sound)
-            .addFunction("load_sound", &MySoundManager::load_sound)
-			.addFunction("get_sample_frequency", &MySoundManager::get_sample_frequency)
 			.addFunction("set_master_volume", &MySoundManager::set_master_volume)
+
+         // expose everything
+         .addData("audio_open",&MySoundManager::audio_open)
+         .addData("audio_open",&MySoundManager::audio_open)
+
+         .addData("audio_rate",&MySoundManager::audio_rate)
+         .addData("audio_format",&MySoundManager::audio_format)
+         .addData("audio_channels",&MySoundManager::audio_channels)
+         .addData("audio_buffers",&MySoundManager::audio_buffers)
+         .addData("music_volume",&MySoundManager::music_volume)
+         .addData("effects_volume",&MySoundManager::effects_volume)
+
+         .addData("mNumberOfChannels",&MySoundManager::mNumberOfChannels)
+         .addData("mSounds",&MySoundManager::mSounds)
+
+         .addFunction("convert_from_Sint8", &MySoundManager::convert_from_Sint8)
+         .addFunction("convert_from_Sint8_mono", &MySoundManager::convert_from_Sint8_mono)
+         .addFunction("create_fixed_Sint_buffer", &MySoundManager::create_fixed_Sint_buffer)
 		.endClass()
 
 		.beginClass <MyGraphics> ("MyGraphics")

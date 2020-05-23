@@ -64,7 +64,8 @@ public:
 	// master volume control (level 0-7)
 	void set_master_volume(unsigned int level);
 
-private:
+// Allow this to be exposed to Lua (the only user)
+//private:
 
 	int audio_open = 0;
 
