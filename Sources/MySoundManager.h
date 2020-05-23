@@ -39,42 +39,22 @@
 #include "lua.h"
 #include "lauxlib.h"
 
-//#ifdef old_mixer
-typedef int sound_ref;
-
-
-class sound_data_t
-{
-public:
-	Uint8 *buffer;              /* audio buffer for sound file */
-	Uint32 length;              /* length of the buffer (in bytes) */
-	
-	void free_buffer();
-	void concatenate(sound_data_t &sound_to_put_at_end);
-    sound_data_t(): buffer(0), length(0) { }
-    // don't use destructor because copied would need to be fixed...
-    //~sound_data_t() { free_buffer(); }
-};
-//#endif
+typedef double sound_ref;
 
 class MySoundManager {
 public:
 
-	// play a sound effect
-	//void play_sound(sound_t sound, unsigned int sound_level);
 	
-	// To add sound data dynamically. Returns the sound number. Sound data should be between -1 and 1. 
-	//sound_t add_mono_sound(lua_State* L);
-	//sound_t add_stereo_sound(lua_State* L);
 	double get_sample_frequency();
-    //sound_t load_sound(std::string filename);
 
+   // To add sound data dynamically. Returns the sound number. Sound data should be between -1 and 1.
 	sound_ref load_sound(std::string filename);
 	sound_ref add_mono_sound(lua_State* L);
-    void play_sound(sound_ref sound, unsigned int volume_percentage);
+   //sound_t add_stereo_sound(lua_State* L);
 
+   // play a sound effect
+   void play_sound(sound_ref sound, unsigned int volume_percentage);
 
-    //
 	~MySoundManager();
 	MySoundManager();
 
@@ -84,7 +64,8 @@ public:
 	// master volume control (level 0-7)
 	void set_master_volume(unsigned int level);
 
-private:
+// Allow this to be exposed to Lua (the only user)
+//private:
 
 	int audio_open = 0;
 
@@ -103,11 +84,6 @@ private:
 	void convert_from_Sint8(Mix_Chunk *s, Uint8 channels);
 	void convert_from_Sint8_mono(Mix_Chunk *s);
 	Uint32 create_fixed_Sint_buffer(Uint32 length, Mix_Chunk* sound);
-
-#ifdef old_mixer
-	/* this array holds the audio for the noises */
-	std::vector<sound_data_t> sounds;
-#endif
 };
 
 #endif
