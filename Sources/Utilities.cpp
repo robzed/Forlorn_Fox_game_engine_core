@@ -101,11 +101,13 @@ void Utilities::fatalErrorLua(const char *string)
 
 void Utilities::fatalError(const char *string, ...)
 {
-	char str[256];
+   const int str_size = 2048;    // something like apath error does this
+	char str[str_size];
 
 	va_list args;
 	va_start(args, string);
-	vsprintf(str, string, args);
+   vsnprintf(str, str_size-1, string, args);
+   str[str_size-1] = 0;   // whatever happens make sure it's zero terminated, probably unnecessary
 	va_end(args);
 
     if(main_threadID == SDL_ThreadID())

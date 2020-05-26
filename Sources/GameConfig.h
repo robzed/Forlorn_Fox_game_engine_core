@@ -136,7 +136,8 @@ static const int cell_size_lower_limit = 8;
 // 0.72 - Added performance counter access that is Lua friendly
 // 0.73 - Extended performance counter
 // 0.74 - Extended sound manager access
-#define FORLORN_FOX_ENGINE_VERSION 0.74
+// 0.75 - Fix potential fatalError crash (e.g. on invalid require path)
+#define FORLORN_FOX_ENGINE_VERSION 0.75
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif
