@@ -703,7 +703,7 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     .addCFunction("utf8_byte", utf8_byte)
     .addCFunction("utf8_char", utf8_char)
     .addCFunction("table_from_utf8_string", table_from_utf8_string)
-    //.addFunction("fatalError", Utilities::fatalErrorLua)
+    //.addFunction("fatalError", Utilities::fatalErrorLua)  // use error("message") from Lua instead
     .addFunction("SDL_GetTicks", SDL_GetTicks)
 
     .addFunction("SDL_GetRevision", SDL_GetRevision)

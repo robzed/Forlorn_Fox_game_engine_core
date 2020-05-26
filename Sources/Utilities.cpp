@@ -73,7 +73,7 @@ void Utilities::fatalErrorSDL(const char *string, int error_code)
 
     if(main_threadID == SDL_ThreadID())
     {
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error - QUIT", message.c_str(), NULL);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL Fatal Error - QUIT", message.c_str(), NULL);
     }
     else
     {
