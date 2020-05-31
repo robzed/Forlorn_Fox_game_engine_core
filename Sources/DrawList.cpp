@@ -456,7 +456,11 @@ void DrawList::render_complex(MyGraphics* gr, pos_t offset_line, pos_t offset_co
 			// print the element(s)
 			(*dl)->draw(*gr, offset_line, offset_column);
 
-			// print the map data that would be above the element
+/*
+ * 		This needs rewrote for hex map mode
+ * 		But not for the current hex game, so don't bother yet
+ *
+ 			// print the map data that would be above the element
 			// not for stuff printed in pixel_based draw mode, since we
 			// can't easily know which bits of the map overlap it
 			if(maze && view_layer && viewport.draw_mode == Viewport::cell_based)
@@ -496,6 +500,7 @@ void DrawList::render_complex(MyGraphics* gr, pos_t offset_line, pos_t offset_co
 					if (l == int_line)	top_line_layer_adjust = 0;
 				}
 			}
+*/
 		}
 
 		dl++;
