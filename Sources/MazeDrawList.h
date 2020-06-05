@@ -36,6 +36,16 @@
 #include <list>
 #include <vector>
 
+// here and not in PresentationMaze.h to avoid circular includes
+// should really stick this in its own header file
+enum render_option
+{
+	do_not_render_empty_draw_list,
+	render_empty_draw_list_as_space,
+	hex_rendering,
+	square_rendering,
+};
+
 class MazeDrawListElement;
 typedef std::list<MazeDrawListElement*>::iterator mdl_iterator;
 
@@ -60,12 +70,6 @@ public:
 	void render(MyGraphics& gr, pos_t line, pos_t column, int start_layer, int end_layer, bool overdraw = false);
 
 	void check_integrity();
-
-	enum render_option
-	{
-		do_not_render_empty_draw_list,
-		render_empty_draw_list_as_space,
-	};
 
 	void set_render_option(render_option ro);
 

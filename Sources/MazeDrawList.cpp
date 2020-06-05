@@ -203,7 +203,7 @@ MazeDrawList::~MazeDrawList()
     mdl_magic = 0;
 }
 
-void MazeDrawList::set_render_option(MazeDrawList::render_option ro)
+void MazeDrawList::set_render_option(render_option ro)
 {
 	switch(ro)
 	{
@@ -213,6 +213,9 @@ void MazeDrawList::set_render_option(MazeDrawList::render_option ro)
 
 		case render_empty_draw_list_as_space:
 			_render_empty_draw_list_as_space = true;
+			break;
+
+		default:
 			break;
 	}
 }

@@ -49,6 +49,13 @@
 
 #include <cmath>
 
+//const auto hex_horizontal_offset = std::sin((60 / 180.0) * ((double) M_PI));   // ~0.866
+//const auto hex_vertical_offset = 0.75;
+const auto hex_horizontal_offset = 0.75;
+const auto hex_vertical_offset = std::sin((60 / 180.0) * ((double) M_PI));   // ~0.866
+const auto square_horizontal_offset = 1.0;
+const auto square_vertical_offset = 1.0;
+
 
 PresentationMaze::PresentationMaze(double min_glyphs_horizontally, double min_glyphs_vertically)
 : mobs_draw_list(this)
@@ -65,6 +72,9 @@ PresentationMaze::PresentationMaze(double min_glyphs_horizontally, double min_gl
 , click_callback(gulp_cpp->get_ui_lua_state())
 , drag_callback(gulp_cpp->get_ui_lua_state())
 , click_self(gulp_cpp->get_ui_lua_state())
+, mHexRendering(false)
+, mHorizontalOffset(square_horizontal_offset)
+, mVerticalOffset(square_vertical_offset)
 {
 	//std::cout << "Constructing PresentationMaze " << this << std::endl;
 
@@ -111,17 +121,15 @@ void PresentationMaze::delete_all_cmep()
 	}
 }
 
-const auto hex_horizontal_offset = std::sin((60 / 180.0) * ((double) M_PI));   // ~0.866
-const auto hex_vertical_offset = 0.75; // std::cos(60);  // = 0.5
-
 double PresentationMaze::GetAvailableLevelWidth()
 {
-	return available_level_width * hex_vertical_offset;
+
+	return available_level_width * mHorizontalOffset;
 }
 
 double PresentationMaze::GetAvailableLevelHeight()
 {
-	return available_level_height * hex_horizontal_offset;
+	return available_level_height * mVerticalOffset;
 }
 
 int PresentationMaze::GetCellSize()
@@ -473,11 +481,14 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
             map_start_column = 0;
         }
 
+        pos_t render_line = line * mVerticalOffset;
+        pos_t half_vertical_cell = mVerticalOffset / 2;
+
+        column = column * mHorizontalOffset;
         while(map_start_column <= current_column_max and map_start_column >= 0)
 		{
-            pos_t render_line = line + ((map_start_column % 2) ? 0.5 : 0);
-        	render_map_data(*gr, map_start_line, map_start_column, render_line*hex_horizontal_offset, column*hex_vertical_offset, 0, view_layer[map_start_line][map_start_column]);
-            column ++;
+        	render_map_data(*gr, map_start_line, map_start_column, render_line+((mHexRendering && (map_start_column % 2)) ? half_vertical_cell : 0), column, 0, view_layer[map_start_line][map_start_column]);
+            column += mHorizontalOffset;
             map_start_column ++;
         }
  		
@@ -495,15 +506,33 @@ DrawList* PresentationMaze::get_mobs_draw_list()
 	return &mobs_draw_list;
 }
 
-void PresentationMaze::set_render_option(unsigned int ro)
+void PresentationMaze::set_render_option(int ro_in)
 {
-	for(int line = 0; line < MazeConstants::maze_height_max; line++)
+	render_option ro = static_cast<render_option>(ro_in);
+
+	if(ro == do_not_render_empty_draw_list || ro == render_empty_draw_list_as_space)
 	{
-		for(int column = 0; column < MazeConstants::maze_width_max; column++)
+		for(int line = 0; line < MazeConstants::maze_height_max; line++)
 		{
-			maze_draw_list[line][column].set_render_option((MazeDrawList::render_option)ro);
+			for(int column = 0; column < MazeConstants::maze_width_max; column++)
+			{
+				maze_draw_list[line][column].set_render_option(ro);
+			}
 		}
 	}
+	else if(ro == hex_rendering)
+	{
+		mHexRendering = true;
+		mHorizontalOffset = hex_horizontal_offset;
+		mVerticalOffset = hex_vertical_offset;
+	}
+	else if(ro == square_rendering)
+	{
+		mHexRendering = false;
+		mHorizontalOffset = square_horizontal_offset;
+		mVerticalOffset = square_vertical_offset;
+	}
+
 }
 
 void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_column, pos_t screen_line, pos_t screen_column, int start_layer, int end_layer)
@@ -590,12 +619,12 @@ void PresentationMaze::set_offset(pos_t line, pos_t column)
 
 int PresentationMaze::width()
 {
-	return ((current_column_max+1));// * hex_vertical_offset);		// not yet right
+	return ((current_column_max+1));// * hex_horizontal_offset);		// not yet right
 }
 
 int PresentationMaze::height()
 {
-	return ((current_line_max+1));// * hex_horizontal_offset);		// not yet right
+	return ((current_line_max+1));// * hex_vertical_offset);		// not yet right
 }
 
 void PresentationMaze::set_wall_transparency(int line, int column, unsigned int direction_map)

@@ -71,6 +71,7 @@ public:
 	bool IsTransparent(direction_t from, direction_t to);
 };
 
+
 class PresentationMaze : public DrawListOwner, public Clickable
 {
 public:
@@ -118,7 +119,9 @@ public:
 	double GetAvailableLevelHeight();
 	int GetCellSize();
 
-	void set_render_option(unsigned int ro);
+	void set_render_option(int ro);
+
+	bool RenderAsHex() { return mHexRendering; }
 
 
 private:
@@ -165,6 +168,12 @@ private:
 	luabridge::LuaRef click_callback;
 	luabridge::LuaRef drag_callback;
 	luabridge::LuaRef click_self;
+
+	bool mHexRendering;
+
+	double mHorizontalOffset;
+	double mVerticalOffset;
+
 
 };
 
