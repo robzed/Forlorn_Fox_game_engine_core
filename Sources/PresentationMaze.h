@@ -171,8 +171,8 @@ private:
 
 	bool mHexRendering;
 
-	double mHorizontalRatio;
-	double mVerticalRatio;
+	double mHorizontalOffsetRatio;
+	double mVerticalOffsetRatio;
 
 
 };

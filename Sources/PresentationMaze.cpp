@@ -49,12 +49,10 @@
 
 #include <cmath>
 
-//const auto hex_horizontal_offset = std::sin((60 / 180.0) * ((double) M_PI));   // ~0.866
-//const auto hex_vertical_offset = 0.75;
-const auto hex_horizontal_offset = 0.75;
-const auto hex_vertical_offset = std::sin((60 / 180.0) * ((double) M_PI));   // ~0.866
-const auto square_horizontal_offset = 1.0;
-const auto square_vertical_offset = 1.0;
+const auto hex_horizontal_offset_ratio = 0.75;
+const auto hex_vertical_offset_ratio = std::sin((60 / 180.0) * ((double) M_PI));   // ~0.866
+const auto square_horizontal_offset_ratio = 1.0;
+const auto square_vertical_offset_ratio = 1.0;
 
 
 PresentationMaze::PresentationMaze(double min_glyphs_horizontally, double min_glyphs_vertically)
@@ -73,8 +71,8 @@ PresentationMaze::PresentationMaze(double min_glyphs_horizontally, double min_gl
 , drag_callback(gulp_cpp->get_ui_lua_state())
 , click_self(gulp_cpp->get_ui_lua_state())
 , mHexRendering(false)
-, mHorizontalRatio(square_horizontal_offset)
-, mVerticalRatio(square_vertical_offset)
+, mHorizontalOffsetRatio(square_horizontal_offset_ratio)
+, mVerticalOffsetRatio(square_vertical_offset_ratio)
 {
 	//std::cout << "Constructing PresentationMaze " << this << std::endl;
 
@@ -124,12 +122,12 @@ void PresentationMaze::delete_all_cmep()
 double PresentationMaze::GetAvailableLevelWidth()
 {
 
-	return available_level_width * mHorizontalRatio;
+	return available_level_width * mHorizontalOffsetRatio;
 }
 
 double PresentationMaze::GetAvailableLevelHeight()
 {
-	return available_level_height * mVerticalRatio;
+	return available_level_height * mVerticalOffsetRatio;
 }
 
 int PresentationMaze::GetCellSize()
@@ -481,14 +479,14 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
             map_start_column = 0;
         }
 
-        pos_t render_line = line * mVerticalRatio;
-        pos_t half_vertical_cell = mVerticalRatio / 2;
+        pos_t render_line = line * mVerticalOffsetRatio;
+        pos_t half_vertical_cell = mVerticalOffsetRatio / 2;
 
-        column = column * mHorizontalRatio;
+        column = column * mHorizontalOffsetRatio;
         while(map_start_column <= current_column_max and map_start_column >= 0)
 		{
         	render_map_data(*gr, map_start_line, map_start_column, render_line+((mHexRendering && (map_start_column % 2)) ? half_vertical_cell : 0), column, 0, view_layer[map_start_line][map_start_column]);
-            column += mHorizontalRatio;
+            column += mHorizontalOffsetRatio;
             map_start_column ++;
         }
  		
@@ -523,14 +521,14 @@ void PresentationMaze::set_render_option(int ro_in)
 	else if(ro == hex_rendering)
 	{
 		mHexRendering = true;
-		mHorizontalRatio = hex_horizontal_offset;
-		mVerticalRatio = hex_vertical_offset;
+		mHorizontalOffsetRatio = hex_horizontal_offset_ratio;
+		mVerticalOffsetRatio = hex_vertical_offset_ratio;
 	}
 	else if(ro == square_rendering)
 	{
 		mHexRendering = false;
-		mHorizontalRatio = square_horizontal_offset;
-		mVerticalRatio = square_vertical_offset;
+		mHorizontalOffsetRatio = square_horizontal_offset_ratio;
+		mVerticalOffsetRatio = square_vertical_offset_ratio;
 	}
 
 }
@@ -619,12 +617,12 @@ void PresentationMaze::set_offset(pos_t line, pos_t column)
 
 int PresentationMaze::width()
 {
-	return ((current_column_max+1));// * hex_horizontal_offset);		// not yet right
+	return ((current_column_max+1));
 }
 
 int PresentationMaze::height()
 {
-	return ((current_line_max+1));// * hex_vertical_offset);		// not yet right
+	return ((current_line_max+1));
 }
 
 void PresentationMaze::set_wall_transparency(int line, int column, unsigned int direction_map)
