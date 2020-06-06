@@ -73,8 +73,8 @@ PresentationMaze::PresentationMaze(double min_glyphs_horizontally, double min_gl
 , drag_callback(gulp_cpp->get_ui_lua_state())
 , click_self(gulp_cpp->get_ui_lua_state())
 , mHexRendering(false)
-, mHorizontalOffset(square_horizontal_offset)
-, mVerticalOffset(square_vertical_offset)
+, mHorizontalRatio(square_horizontal_offset)
+, mVerticalRatio(square_vertical_offset)
 {
 	//std::cout << "Constructing PresentationMaze " << this << std::endl;
 
@@ -124,12 +124,12 @@ void PresentationMaze::delete_all_cmep()
 double PresentationMaze::GetAvailableLevelWidth()
 {
 
-	return available_level_width * mHorizontalOffset;
+	return available_level_width * mHorizontalRatio;
 }
 
 double PresentationMaze::GetAvailableLevelHeight()
 {
-	return available_level_height * mVerticalOffset;
+	return available_level_height * mVerticalRatio;
 }
 
 int PresentationMaze::GetCellSize()
@@ -481,14 +481,14 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
             map_start_column = 0;
         }
 
-        pos_t render_line = line * mVerticalOffset;
-        pos_t half_vertical_cell = mVerticalOffset / 2;
+        pos_t render_line = line * mVerticalRatio;
+        pos_t half_vertical_cell = mVerticalRatio / 2;
 
-        column = column * mHorizontalOffset;
+        column = column * mHorizontalRatio;
         while(map_start_column <= current_column_max and map_start_column >= 0)
 		{
         	render_map_data(*gr, map_start_line, map_start_column, render_line+((mHexRendering && (map_start_column % 2)) ? half_vertical_cell : 0), column, 0, view_layer[map_start_line][map_start_column]);
-            column += mHorizontalOffset;
+            column += mHorizontalRatio;
             map_start_column ++;
         }
  		
@@ -523,14 +523,14 @@ void PresentationMaze::set_render_option(int ro_in)
 	else if(ro == hex_rendering)
 	{
 		mHexRendering = true;
-		mHorizontalOffset = hex_horizontal_offset;
-		mVerticalOffset = hex_vertical_offset;
+		mHorizontalRatio = hex_horizontal_offset;
+		mVerticalRatio = hex_vertical_offset;
 	}
 	else if(ro == square_rendering)
 	{
 		mHexRendering = false;
-		mHorizontalOffset = square_horizontal_offset;
-		mVerticalOffset = square_vertical_offset;
+		mHorizontalRatio = square_horizontal_offset;
+		mVerticalRatio = square_vertical_offset;
 	}
 
 }
