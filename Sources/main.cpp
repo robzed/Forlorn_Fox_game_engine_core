@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    main_threadID = SDL_ThreadID();
+    main_threadID = SDL_ThreadID(); // The SDL file I/O and threading subsystems are initialized by default by SDL_Init(0);
 
 #ifdef __ANDROID__
     CheckAndroidInstallation();
