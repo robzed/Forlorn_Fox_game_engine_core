@@ -121,13 +121,14 @@ void PresentationMaze::delete_all_cmep()
 
 double PresentationMaze::GetAvailableLevelWidth()
 {
+	// is it correct to return a divided result here?  NO
 
-	return available_level_width * mHorizontalOffsetRatio;
+	return available_level_width;
 }
 
 double PresentationMaze::GetAvailableLevelHeight()
 {
-	return available_level_height * mVerticalOffsetRatio;
+	return available_level_height;
 }
 
 int PresentationMaze::GetCellSize()
@@ -257,8 +258,10 @@ int PresentationMaze::calculate_cell_size()
 		cell_size = viewport.rect.w / ideal_available_level_width;
 	}
 
+	if(mHexRendering) cell_size /= hex_vertical_offset_ratio;
+
 	// limit the maximum zoom
-	if (cell_size == 1000000)
+	if (cell_size >= 1000000)
 	{
 		// make sure we change cell size at least a wee bit
 		cell_size = viewport.cell_size + 2;		// 2 to account for correction below
@@ -274,7 +277,6 @@ int PresentationMaze::calculate_cell_size()
 		// limit how small the zoom can go
 		cell_size = cell_size_lower_limit;
 	}
-
 
 	return cell_size;
 }
@@ -422,18 +424,19 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
 	// access to set this from lua would be good - or it might be possible to infer it,
 	// or even better the tiles in Escape should be 1x1 in the presentation maze structure,
 	// but still 10x10 otherwise
-	int tile_size = 10;
+	int tile_size = 1;
 
 	gr->set_viewport(viewport);
 
+	int integer_part_of_offset_line = (int)offset_line;
+	pos_t fractional_part_of_offset_line = offset_line - (int)offset_line;
+
 	// tile_size hack for escape
-	pos_t line = 0 - offset_line + (int)offset_line - tile_size;
+	pos_t line = 0 - fractional_part_of_offset_line - tile_size;
 
 	// int cast in the following line is REQUIRED to avoid errors where offset_line is close to zero,
 	// even though all the other values, and the result, are ints...!
-	int map_start_line = start_line + (int)offset_line - tile_size;
-
-	//printf("line:%f map_start_line:%d offset_line:%f available_level_height:%f\n", line, map_start_line, offset_line, available_level_height);
+	int map_start_line = start_line + integer_part_of_offset_line - tile_size;
 
 	if(map_start_line > current_line_max)
 	{
@@ -459,7 +462,12 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
 		lines_to_print = current_line_max - map_start_line + 1;
 	}
 
-	while(lines_to_print and line < GetAvailableLevelHeight() and map_start_line <= current_line_max and map_start_line >= 0)
+	double available_height = GetAvailableLevelHeight();
+	if(mHexRendering) available_height /= mVerticalOffsetRatio;
+
+	pos_t half_vertical_cell = mVerticalOffsetRatio / 2;
+
+	while(lines_to_print and line < available_height and map_start_line <= current_line_max and map_start_line >= 0)
 	{
 
 		// Calculate the left hand edge of the screen
@@ -479,18 +487,14 @@ void PresentationMaze::print_selected(MyGraphics* gr, int start_line, int lines_
             map_start_column = 0;
         }
 
-        pos_t render_line = line * mVerticalOffsetRatio;
-        pos_t half_vertical_cell = mVerticalOffsetRatio / 2;
-
-        column = column * mHorizontalOffsetRatio;
         while(map_start_column <= current_column_max and map_start_column >= 0)
 		{
-        	render_map_data(*gr, map_start_line, map_start_column, render_line+((mHexRendering && (map_start_column % 2)) ? half_vertical_cell : 0), column, 0, view_layer[map_start_line][map_start_column]);
+        	render_map_data(*gr, map_start_line, map_start_column, line+((mHexRendering && (map_start_column % 2)) ? half_vertical_cell : 0), column, 0, view_layer[map_start_line][map_start_column]);
             column += mHorizontalOffsetRatio;
             map_start_column ++;
         }
  		
-        line ++;
+        line += mVerticalOffsetRatio;
 		map_start_line ++;
 		lines_to_print--;
 	}
