@@ -488,9 +488,8 @@ void DrawList::render_complex(MyGraphics* gr, pos_t offset_line, pos_t offset_co
 					{
 						if( (l >= 0) && (c >= 0) && (l < maze->height()) && (c < maze->width()))
 						{
-							MazeDrawList* mdl = maze->get_maze_draw_list(l, c);
 							int vl = (*view_layer)[l][c];
-							mdl->render(*gr, l-offset_line, c-offset_column, (*dl)->layer + top_line_layer_adjust, vl, true);
+							maze->render_map_data(*gr, l, c, l-offset_line, c-offset_column, (*dl)->layer + top_line_layer_adjust, vl, true);
 						}
 					}
 

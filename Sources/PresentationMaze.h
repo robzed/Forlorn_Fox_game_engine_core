@@ -123,9 +123,9 @@ public:
 
 	bool RenderAsHex() { return mHexRendering; }
 
+	void render_map_data(MyGraphics& gr, int map_line, int map_column, pos_t screen_line, pos_t screen_column, int start_layer, int end_layer, bool overdraw = false);
 
 private:
-	void render_map_data(MyGraphics& gr, int map_line, int map_column, pos_t screen_line, pos_t screen_column, int start_layer, int end_layer);
 	void delete_all_cmep();
 	void update_viewport_and_dimensions();
 	int calculate_cell_size();

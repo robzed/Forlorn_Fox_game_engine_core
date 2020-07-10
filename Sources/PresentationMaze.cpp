@@ -537,7 +537,7 @@ void PresentationMaze::set_render_option(int ro_in)
 
 }
 
-void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_column, pos_t screen_line, pos_t screen_column, int start_layer, int end_layer)
+void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_column, pos_t screen_line, pos_t screen_column, int start_layer, int end_layer, bool overdraw)
 {
 	gr.set_fg_colour(maze_foreground[map_line][map_column]);
 	gr.set_bg_fullcolour(maze_background[map_line][map_column]);
@@ -546,7 +546,7 @@ void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_col
 	// Need overdraw for hex tiles to work
 	// and for some reason as yet unknown, overdraw breaks the older maps
 	// do for now, pass mHexRendering in as the overdraw flag
-	(maze_draw_list[map_line][map_column]).render(gr, screen_line, screen_column, start_layer, end_layer, mHexRendering);
+	(maze_draw_list[map_line][map_column]).render(gr, screen_line, screen_column, start_layer, end_layer, overdraw || mHexRendering);
 }
 
 
