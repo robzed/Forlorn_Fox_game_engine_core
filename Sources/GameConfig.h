@@ -138,7 +138,8 @@ static const int cell_size_lower_limit = 8;
 // 0.74 - Extended sound manager access
 // 0.75 - Fix potential fatalError crash (e.g. on invalid require path)
 // 0.76 - Hex rendering
-#define FORLORN_FOX_ENGINE_VERSION 0.76
+// 0.77 - Added sqlite3
+#define FORLORN_FOX_ENGINE_VERSION 0.77
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif

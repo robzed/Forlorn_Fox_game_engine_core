@@ -120,6 +120,7 @@ void LuaMain::library_init()
 
 	open_socket_lib();
 	open_mime_lib();
+	open_lsqlite3_lib();
 
     luaL_requiref(L, "lfs", luaopen_lfs, 1);
     lua_pop(L, 1);	// drop the module
@@ -137,6 +138,13 @@ void LuaMain::open_mime_lib()
 	luaL_requiref(L, "mime.core", luaopen_mime_core, 1);
 	lua_pop(L, 1);	// drop the module
 	//run_lua_file(LoadPath("scripts/mime.lua").c_str());
+}
+
+extern int luaopen_lsqlite3(lua_State *L);
+void LuaMain::open_lsqlite3_lib()
+{
+	luaL_requiref(L, "lsqlite3", luaopen_lsqlite3, 1);
+	lua_pop(L, 1);	// drop the module
 }
 
 
