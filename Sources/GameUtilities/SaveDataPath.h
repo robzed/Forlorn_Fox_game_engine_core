@@ -54,13 +54,17 @@ public:
 	virtual const char* c_str();		// same lifetime as std::string::c_str()
 	virtual std::string str();
 	static void override(std::string base_path);
-    static void set_top_folder(std::string folder_name);
-    static const char* get_base_pref_path();
+   static void set_subfolder(std::string folder_name);
+   static void set_org_name(std::string folder_name);
+   static void set_app_name(std::string app_name);
+   static const char* get_base_pref_path();
 private:
 	std::string path_to_file;
 	static std::string root_data_path;
 	static bool failed;
-    static std::string stored_folder_name;
+   static std::string stored_subfolder_name;
+   static std::string org_name;
+   static std::string app_name;
 };
 
 

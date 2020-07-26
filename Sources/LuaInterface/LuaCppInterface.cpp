@@ -797,7 +797,9 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
     .addFunction ("c_str", &SaveDataPath::c_str)
     .addFunction ("str", &SaveDataPath::str)
     .addStaticFunction ("override", &SaveDataPath::override)
-    .addStaticFunction("set_top_folder", &SaveDataPath::set_top_folder)
+    .addStaticFunction("set_subfolder", &SaveDataPath::set_subfolder)
+    .addStaticFunction("set_org_name", &SaveDataPath::set_org_name)
+    .addStaticFunction("set_app_name", &SaveDataPath::set_app_name)
     .addStaticFunction("get_base_pref_path", &SaveDataPath::get_base_pref_path)
     .endClass ()
     

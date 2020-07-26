@@ -40,7 +40,9 @@
 bool SaveDataPath::failed = false;
 std::string SaveDataPath::root_data_path;
 
-std::string SaveDataPath::stored_folder_name = "";
+std::string SaveDataPath::stored_subfolder_name = "";
+std::string SaveDataPath::org_name = "my_company";
+std::string SaveDataPath::app_name = "my_new_app";
 
 // added this temporarily for the Pandora version, before we update the SDL
 #if !SDL_VERSION_ATLEAST(2,0,1)
@@ -53,7 +55,12 @@ const char* SaveDataPath::get_base_pref_path()
 {
     if(not failed and root_data_path.length() == 0)
     {
-        char *base_path = SDL_GetPrefPath("RedGameWorks", "Escape");
+       if(app_name == "" or org_name == "")
+       {
+          failed = true;
+          return 0;
+       }
+       char *base_path = SDL_GetPrefPath(org_name.c_str(), app_name.c_str());
         if (base_path) {
             root_data_path = base_path;
             SDL_free(base_path);
@@ -75,14 +82,21 @@ SaveDataPath::SaveDataPath(std::string file_name)
     if( not get_base_pref_path()) { return; }
     windows_flag = not root_data_path.empty() and *root_data_path.rbegin() == '\\';
 
-    if(stored_folder_name == "")
+    if(stored_subfolder_name == "")
     {
-        Utilities::fatalError("SaveDataPath used before set_top_folder set up");
-        failed = true;
-        return;
+       // Utilities::fatalError("SaveDataPath used before set_top_folder set up");
+       // failed = true;
+       // return;
+       
+       // don't want a subfolder
+       path_to_file = root_data_path + file_name;
+    }
+    else
+    {
+       // add in the sub-folder
+       path_to_file = root_data_path + stored_subfolder_name + '/' + file_name;
     }
 
-	path_to_file = root_data_path + stored_folder_name + '/' + file_name;
 
 	if(windows_flag)
 	{
@@ -119,7 +133,15 @@ void SaveDataPath::override(std::string base_path)
 	root_data_path = base_path;
 }
 
-void SaveDataPath::set_top_folder(std::string folder_name)
+void SaveDataPath::set_subfolder(std::string folder_name)
 {
-    stored_folder_name = folder_name;
+    stored_subfolder_name = folder_name;
+}
+void SaveDataPath::set_app_name(std::string app_name_parameter)
+{
+    app_name = app_name_parameter;
+}
+void SaveDataPath::set_org_name(std::string org_name_parameter)
+{
+    org_name = org_name_parameter;
 }
