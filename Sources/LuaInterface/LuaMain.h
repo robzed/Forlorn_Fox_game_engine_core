@@ -57,6 +57,7 @@ public:
 	void library_init();
 	void open_socket_lib();
 	void open_mime_lib();
+	void open_lsqlite3_lib();
 
     int run_lua_file(const char* filename, bool print_errors=true, bool ignore_file_missing_errors=false); // , int nargs=0, int nres=0);
 	int do_string(const std::string& str, bool print_errors, const std::string name);
