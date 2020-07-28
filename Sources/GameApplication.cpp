@@ -49,7 +49,7 @@
 // set up the renderer
 int double_buffering_on = 1;
 
-const char* GameApplication::copyright = "Copyright © 2014-2019 Rob Probin, Tony Park, Kenny Osborne. All rights reserved";
+const char* GameApplication::copyright = "Copyright © 2014-2020 Rob Probin, Tony Park, Kenny Osborne. All rights reserved";
 
 //const char* GameApplication::return_copyright()
 //{
@@ -128,27 +128,43 @@ int GameApplication::main(int argc, char* argv[])
     int result_isnum = false;
     lua_Integer result = lua_tointegerx(lua_user_interface, -1, &result_isnum);
     if(result_isnum) { return (int)result; }
+    
+    bool gui_enabled = true;
+    const char * str_result = lua_tostring(lua_user_interface, -1);
+    if(str_result and std::string(str_result) == "nogui")
+    {
+       gui_enabled = false;
+    }
     lua_pop(lua_user_interface, 1);
 
-    if(not renderer)
+   
+    // only check if we don't specify no gui
+   
+    if(gui_enabled)
     {
-        Utilities::fatalError("Game boot didn't set renderer");
-    }
 
-    set_up_ui_ff_libraries(&lua_user_interface, *this);
+       if(not renderer)
+       {
+           Utilities::fatalError("Game boot didn't set renderer");
+       }
+       
 
-	int error = SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &double_buffering_on);
-	if(error)
-	{
-		Utilities::debugMessage("******>>>>> SDL_GL_GetAttribute failed: %s", SDL_GetError());
-	}
-	error = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-	if(error)
-	{
-		Utilities::fatalError("SDL_SetRenderDrawBlendMode failed: %s", SDL_GetError());
-	}
 
-	graphics = new MyGraphics_render(renderer);
+      set_up_ui_ff_libraries(&lua_user_interface, *this);
+
+      int error = SDL_GL_GetAttribute(SDL_GL_DOUBLEBUFFER, &double_buffering_on);
+      if(error)
+      {
+         Utilities::debugMessage("******>>>>> SDL_GL_GetAttribute failed: %s", SDL_GetError());
+      }
+      error = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+      if(error)
+      {
+         Utilities::fatalError("SDL_SetRenderDrawBlendMode failed: %s", SDL_GetError());
+      }
+
+      graphics = new MyGraphics_render(renderer);
+   }
 
 	frame_rate_limit.set(100);
 
@@ -347,8 +363,11 @@ int GameApplication::main(int argc, char* argv[])
 		// and update lua
 		lua_pushnumber(lua_user_interface, tick_step);
 		run_gulp_function_if_exists(&lua_user_interface, "update", 1);
-
-        render(renderer, *graphics);
+      
+      if(gui_enabled)
+      {
+         render(renderer, *graphics);
+      }
 
 		debug.timing_loop_end_predelay();
 		frame_rate_limit.limit(we_think_vsync_is_enabled);
@@ -368,6 +387,7 @@ void GameApplication::SetRenderer(SDL_Renderer *renderer_in, bool vsync_guess)
 GameApplication::GameApplication()
 : renderer(NULL) // renderer_in)
 , fill_background_colour(BLACK)
+, graphics(0)
 , game_argc(0)
 , game_argv(0)
 , multitouch_active(false)
