@@ -172,11 +172,13 @@ int GameApplication::main(int argc, char* argv[])
     //-----------------------------------------------------------------------------
 	load_main_file(&lua_user_interface, "scripts/main.lua");
 
-
-	// before loading, create the splash screen and render it
-	luabridge::push(lua_user_interface, this);
-	run_gulp_function_if_exists(&lua_user_interface, "splash", 1);
-	render(renderer, *graphics);
+   if(gui_enabled)
+   {
+      // before loading, create the splash screen and render it
+      luabridge::push(lua_user_interface, this);
+      run_gulp_function_if_exists(&lua_user_interface, "splash", 1);
+      render(renderer, *graphics);
+   }
 
 	// push app as arg to gulp.load in lua
 	luabridge::push(lua_user_interface, this);
