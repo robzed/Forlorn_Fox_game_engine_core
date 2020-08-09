@@ -142,7 +142,8 @@ static const int cell_size_lower_limit = 8;
 // 0.78 - Changed save data path to allow configuration of organisation and app name
 // 0.79 - Added support for nogui
 // 0.80 - More fixes for nogui
-#define FORLORN_FOX_ENGINE_VERSION 0.80
+// 0.81 - moved setup_ff_lua_state() to main not ui
+#define FORLORN_FOX_ENGINE_VERSION 0.81
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif

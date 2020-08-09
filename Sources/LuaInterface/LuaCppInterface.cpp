@@ -997,6 +997,7 @@ static void set_up_main_ff_cpp_bindings(lua_State *L, std::string base_table_nam
       .beginClass <GameApplication> ("GameApplication")
          .addFunction("quit_main_loop", &GameApplication::quit_main_loop)
          .addFunction("verbose_engine", &GameApplication::verbose_engine)
+         .addFunction("setup_ff_lua_state", &GameApplication::setup_ff_lua_state)
       .endClass()
 
 
@@ -1196,7 +1197,6 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
             .addFunction("remove_mouse_target", &GameApplication::remove_mouse_target)
             .addFunction("add_mouse_target", &GameApplication::add_mouse_target)
             .addFunction("run_mouse_target", &GameApplication::run_mouse_target)
-            .addFunction("setup_ff_lua_state", &GameApplication::setup_ff_lua_state)
             .addFunction("fps_test", &GameApplication::fps_test)
 		    //.addFunction("render", &GameApplication::render)
 		.endClass()
