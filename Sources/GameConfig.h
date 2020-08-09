@@ -141,7 +141,8 @@ static const int cell_size_lower_limit = 8;
 // 0.77 - Added sqlite3
 // 0.78 - Changed save data path to allow configuration of organisation and app name
 // 0.79 - Added support for nogui
-#define FORLORN_FOX_ENGINE_VERSION 0.79
+// 0.80 - More fixes for nogui
+#define FORLORN_FOX_ENGINE_VERSION 0.80
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif

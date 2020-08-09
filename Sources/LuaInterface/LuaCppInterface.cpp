@@ -963,6 +963,51 @@ int get_SDL_Surface_height(SDL_Surface* s)
 
 // ------------------------------------------------------------------------------
 //
+// We bind all the Forlorn Fox Main classes in here, rather than spread them out over the project.
+//
+// ------------------------------------------------------------------------------
+static void set_up_main_ff_cpp_bindings(lua_State *L, std::string base_table_name)
+{
+   using namespace luabridge;
+
+   //
+   // Define some classes
+   //
+   getGlobalNamespace (L)
+   .beginNamespace (base_table_name.c_str())
+
+   //
+   // Class definitions
+   //
+   //
+        .beginClass<LuaCommandLineInterpreter>("LuaCommandLineInterpreter")
+            .addFunction ("process_line", &LuaCommandLineInterpreter::process_line)
+            .addFunction ("print_version", &LuaCommandLineInterpreter::print_version)
+            .addFunction ("print_prompt", &LuaCommandLineInterpreter::print_prompt)
+        .endClass ()
+    
+        // extend this one
+        .beginClass <LuaMain> ("LuaMain")
+         .addFunction("open_console", &LuaMain::open_console)
+            .addFunction("get_CLI", &LuaMain::get_CLI)
+      .endClass ()
+
+
+        // re-open GameApplication to extend it
+      .beginClass <GameApplication> ("GameApplication")
+         .addFunction("quit_main_loop", &GameApplication::quit_main_loop)
+         .addFunction("verbose_engine", &GameApplication::verbose_engine)
+      .endClass()
+
+
+   .endNamespace();
+}
+
+
+
+
+// ------------------------------------------------------------------------------
+//
 // We bind all the Forlorn Fox UI classes in here, rather than spread them out over the project.
 //
 // ------------------------------------------------------------------------------
@@ -1058,17 +1103,6 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
             .addConstructor<void (*) (void)>()
         .endClass()
     
-        .beginClass<LuaCommandLineInterpreter>("LuaCommandLineInterpreter")
-            .addFunction ("process_line", &LuaCommandLineInterpreter::process_line)
-            .addFunction ("print_version", &LuaCommandLineInterpreter::print_version)
-            .addFunction ("print_prompt", &LuaCommandLineInterpreter::print_prompt)
-        .endClass ()
-    
-        // extend this one
-        .beginClass <LuaMain> ("LuaMain")
-			.addFunction("open_console", &LuaMain::open_console)
-            .addFunction("get_CLI", &LuaMain::get_CLI)
-		.endClass ()
 
       .beginClass<Mix_Music>("Mix_Music")
       .endClass()
@@ -1156,7 +1190,6 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
 			.addFunction("get_absolute_draw_list", &GameApplication::get_absolute_draw_list)
 			.addFunction("get_status_draw_list", &GameApplication::get_status_draw_list)
 			.addFunction("get_multiplayer_status_draw_list", &GameApplication::get_multiplayer_status_draw_list)
-			.addFunction("quit_main_loop", &GameApplication::quit_main_loop)
             .addFunction("get_SDL_renderer", &GameApplication::get_SDL_renderer)
             .addFunction("get_standard_graphics_context", &GameApplication::get_standard_graphics_context)
             .addFunction("set_background_colour", &GameApplication::set_background_colour)
@@ -1165,7 +1198,6 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
             .addFunction("run_mouse_target", &GameApplication::run_mouse_target)
             .addFunction("setup_ff_lua_state", &GameApplication::setup_ff_lua_state)
             .addFunction("fps_test", &GameApplication::fps_test)
-            .addFunction("verbose_engine", &GameApplication::verbose_engine)
 		    //.addFunction("render", &GameApplication::render)
 		.endClass()
 
@@ -1671,6 +1703,29 @@ void set_up_basic_ff_libraries(LuaMain* l)
 
 // ------------------------------------------------------------------------------
 //
+// THESE LIBRARIES ARE SET UP ONLY FOR THE MAIN INSTANCE
+//
+// ------------------------------------------------------------------------------
+void set_up_main_thread_libraries(LuaMain* l)
+{
+    if(not l) { Utilities::fatalError("LuaMain null in set_up_main_thread_libraries()"); }
+    LuaMain& L = *l;
+   
+   set_up_main_ff_cpp_bindings(L, master_table_name+"_cpp");
+   
+   // get the table that's just been created and add stuff manually..
+   L.return_namespace_table(master_table_name);
+   
+   //lua_pushcfunction(L, open_console);
+   //lua_setfield(L, -2, "open_console");
+   luabridge::push(L, &L);
+   lua_setfield(L, -2, "lua_main");
+   
+   lua_pop(L, 1);   // drop the table
+}
+
+// ------------------------------------------------------------------------------
+//
 // THESE LIBRARIES ARE SET UP ONLY FOR THE UI INSTANCE
 //
 // ------------------------------------------------------------------------------
@@ -1685,10 +1740,7 @@ void set_up_ui_ff_libraries(LuaMain* l, GameApplication& app)
 	// get the table that's just been created and add stuff manually..
 	L.return_namespace_table(master_table_name);
 
-    //lua_pushcfunction(L, open_console);
-    //lua_setfield(L, -2, "open_console");
-    luabridge::push(L, &L);
-    lua_setfield(L, -2, "lua_main");
+
 
 	// we put all the varibles into a gulp 'namespace' (table)
 	// This is like Love 2D.

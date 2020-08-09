@@ -43,6 +43,7 @@ class GameApplication;
 // Functions are therefore fine.
 void set_up_basic_ff_libraries(LuaMain*l);
 void set_up_ui_ff_libraries(LuaMain*l, GameApplication& app);
+void set_up_main_thread_libraries(LuaMain*l);
 
 void load_main_file(LuaMain* l, const char* file_name);
 void load_conf_file(LuaMain* l);

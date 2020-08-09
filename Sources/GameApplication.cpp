@@ -138,6 +138,8 @@ int GameApplication::main(int argc, char* argv[])
     lua_pop(lua_user_interface, 1);
 
    
+   set_up_main_thread_libraries(&lua_user_interface);
+   
     // only check if we don't specify no gui
    
     if(gui_enabled)
