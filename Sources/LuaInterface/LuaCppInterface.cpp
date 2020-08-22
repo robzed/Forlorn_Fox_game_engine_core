@@ -961,6 +961,11 @@ int get_SDL_Surface_height(SDL_Surface* s)
 //    return r;
 //}
 
+int SDL_SetError_helper(const char* s)
+{
+    return SDL_SetError("%s", s);
+}
+
 // ------------------------------------------------------------------------------
 //
 // We bind all the Forlorn Fox Main classes in here, rather than spread them out over the project.
@@ -975,6 +980,11 @@ static void set_up_main_ff_cpp_bindings(lua_State *L, std::string base_table_nam
    //
    getGlobalNamespace (L)
    .beginNamespace (base_table_name.c_str())
+
+   // functions
+      .addFunction("SDL_GetError", SDL_GetError)
+      .addFunction("SDL_ClearError", SDL_ClearError)
+      .addFunction("SDL_SetError", SDL_SetError_helper)      // would need helper of some sort for varg? Use string.format from Lua
 
    //
    // Class definitions
@@ -1005,7 +1015,10 @@ static void set_up_main_ff_cpp_bindings(lua_State *L, std::string base_table_nam
 }
 
 
-
+int SDL_GameControllerAddMappingsFromFile_helper(const char* file)
+{
+    return SDL_GameControllerAddMappingsFromFile(file);
+}
 
 // ------------------------------------------------------------------------------
 //
@@ -1058,7 +1071,6 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
         .addFunction("SDL_RenderGetClipRect", SDL_RenderGetClipRect)
         .addFunction("SDL_RenderSetClipRect", SDL_RenderSetClipRect)
         //.addFunction("SDL_RenderIsClipEnabled", SDL_RenderIsClipEnabled)  // v2.0.4
-        .addFunction("SDL_GetError", SDL_GetError)
         .addFunction("load_image", load_image)
         .addFunction("get_SDL_PIXELFORMAT_ABGR8888", get_SDL_PIXELFORMAT_ABGR8888)
         .addCFunction("SDL_PixelFormatEnumToMasks", SDL_PixelFormatEnumToMasks_helper)
@@ -1085,7 +1097,56 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
 
 		.addFunction("get_rgb_from_simple_colour", _get_rgb_from_simple_colour)
 
-    
+
+      // joystick functions
+      .addFunction("SDL_JoystickClose", SDL_JoystickClose)
+      .addFunction("SDL_JoystickCurrentPowerLevel", SDL_JoystickCurrentPowerLevel)
+      .addFunction("SDL_JoystickEventState", SDL_JoystickEventState)
+      .addFunction("SDL_JoystickFromInstanceID", SDL_JoystickFromInstanceID)
+      .addFunction("SDL_JoystickGetAttached", SDL_JoystickGetAttached)
+      .addFunction("SDL_JoystickGetAxis", SDL_JoystickGetAxis)
+      .addFunction("SDL_JoystickGetBall", SDL_JoystickGetBall)
+      .addFunction("SDL_JoystickGetButton", SDL_JoystickGetButton)
+      .addFunction("SDL_JoystickGetDeviceGUID", SDL_JoystickGetDeviceGUID)
+      .addFunction("SDL_JoystickGetGUID", SDL_JoystickGetGUID)
+      .addFunction("SDL_JoystickGetGUIDFromString", SDL_JoystickGetGUIDFromString)
+      .addFunction("SDL_JoystickGetGUIDString", SDL_JoystickGetGUIDString)
+      .addFunction("SDL_JoystickGetHat", SDL_JoystickGetHat)
+      .addFunction("SDL_JoystickInstanceID", SDL_JoystickInstanceID)
+      .addFunction("SDL_JoystickName", SDL_JoystickName)
+      .addFunction("SDL_JoystickNameForIndex", SDL_JoystickNameForIndex)
+      .addFunction("SDL_JoystickNumAxes", SDL_JoystickNumAxes)
+      .addFunction("SDL_JoystickNumBalls", SDL_JoystickNumBalls)
+      .addFunction("SDL_JoystickNumHats", SDL_JoystickNumHats)
+      .addFunction("SDL_JoystickOpen", SDL_JoystickOpen)
+      .addFunction("SDL_JoystickUpdate", SDL_JoystickUpdate)
+      .addFunction("SDL_NumJoysticks", SDL_NumJoysticks)
+
+
+    // game controller functions
+    .addFunction("SDL_GameControllerAddMapping", SDL_GameControllerAddMapping)
+    .addFunction("SDL_GameControllerAddMappingsFromFile", SDL_GameControllerAddMappingsFromFile_helper)
+    .addFunction("SDL_GameControllerAddMappingsFromRW", SDL_GameControllerAddMappingsFromRW)
+    .addFunction("SDL_GameControllerClose", SDL_GameControllerClose)
+    .addFunction("SDL_GameControllerEventState", SDL_GameControllerEventState)
+    .addFunction("SDL_GameControllerFromInstanceID", SDL_GameControllerFromInstanceID)
+    .addFunction("SDL_GameControllerGetAttached", SDL_GameControllerGetAttached)
+    .addFunction("SDL_GameControllerGetAxis", SDL_GameControllerGetAxis)
+    .addFunction("SDL_GameControllerGetAxisFromString", SDL_GameControllerGetAxisFromString)
+    .addFunction("SDL_GameControllerGetBindForAxis", SDL_GameControllerGetBindForAxis)
+    .addFunction("SDL_GameControllerGetBindForButton", SDL_GameControllerGetBindForButton)
+    .addFunction("SDL_GameControllerGetButton", SDL_GameControllerGetButton)
+    .addFunction("SDL_GameControllerGetButtonFromString", SDL_GameControllerGetButtonFromString)
+    .addFunction("SDL_GameControllerGetJoystick", SDL_GameControllerGetJoystick)
+    .addFunction("SDL_GameControllerGetStringForAxis", SDL_GameControllerGetStringForAxis)
+    .addFunction("SDL_GameControllerGetStringForButton", SDL_GameControllerGetStringForButton)
+    .addFunction("SDL_GameControllerMapping", SDL_GameControllerMapping)
+    .addFunction("SDL_GameControllerMappingForGUID", SDL_GameControllerMappingForGUID)
+    .addFunction("SDL_GameControllerName", SDL_GameControllerName)
+    .addFunction("SDL_GameControllerNameForIndex", SDL_GameControllerNameForIndex)
+    .addFunction("SDL_GameControllerOpen", SDL_GameControllerOpen)
+    .addFunction("SDL_GameControllerUpdate", SDL_GameControllerUpdate)
+    .addFunction("SDL_IsGameController", SDL_IsGameController)
 
     
 	//
@@ -1577,6 +1638,59 @@ static void create_SDL_RendererFlags(lua_State *L)
 }
 
 
+static void create_SDL_JoystickCurrentPowerLevel_table(lua_State *L)
+{
+    lua_newtable(L);
+
+    //SDL_JoystickCurrentPowerLevel
+    write_integer(L, SDL_JOYSTICK_POWER_UNKNOWN);
+    write_integer(L, SDL_JOYSTICK_POWER_EMPTY);
+    write_integer(L, SDL_JOYSTICK_POWER_LOW);
+    write_integer(L, SDL_JOYSTICK_POWER_MEDIUM);
+    write_integer(L, SDL_JOYSTICK_POWER_FULL);
+    write_integer(L, SDL_JOYSTICK_POWER_WIRED);
+    write_integer(L, SDL_JOYSTICK_POWER_MAX);
+}
+
+static void create_SDL_GameControllerAxis_table(lua_State *L)
+{
+    lua_newtable(L);
+
+    //SDL_GameControllerAxis
+    write_integer(L, SDL_CONTROLLER_AXIS_INVALID);
+    write_integer(L, SDL_CONTROLLER_AXIS_LEFTX);
+    write_integer(L, SDL_CONTROLLER_AXIS_LEFTY);
+    write_integer(L, SDL_CONTROLLER_AXIS_RIGHTX);
+    write_integer(L, SDL_CONTROLLER_AXIS_RIGHTY);
+    write_integer(L, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
+    write_integer(L, SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+    write_integer(L, SDL_CONTROLLER_AXIS_MAX);
+}
+
+static void create_SDL_GameControllerButton_table(lua_State *L)
+{
+    lua_newtable(L);
+
+    //SDL_GameControllerButton
+    write_integer(L, SDL_CONTROLLER_BUTTON_INVALID);
+    write_integer(L, SDL_CONTROLLER_BUTTON_A);
+    write_integer(L, SDL_CONTROLLER_BUTTON_B);
+    write_integer(L, SDL_CONTROLLER_BUTTON_X);
+    write_integer(L, SDL_CONTROLLER_BUTTON_Y);
+    write_integer(L, SDL_CONTROLLER_BUTTON_BACK);
+    write_integer(L, SDL_CONTROLLER_BUTTON_GUIDE);
+    write_integer(L, SDL_CONTROLLER_BUTTON_START);
+    write_integer(L, SDL_CONTROLLER_BUTTON_LEFTSTICK);
+    write_integer(L, SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+    write_integer(L, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+    write_integer(L, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_UP);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+    write_integer(L, SDL_CONTROLLER_BUTTON_MAX);
+}
+
 // ------------------------------------------------------------------------------
 //
 // THESE LIBRARIES ARE SET UP FOR ALL INSTANCES
@@ -1668,35 +1782,15 @@ void set_up_basic_ff_libraries(LuaMain* l)
 
     lua_pushnumber(L, COMPILE_BITS);
     lua_setfield(L, -2, "buildsize");
-
-	// add the 'colour' table to 'gulp'
-	create_and_return_colour_table(L);
-	lua_pushvalue(L, -1);	// copy colour
-	lua_setfield(L, -3, "colour");		// UK spelling
-	lua_setfield(L, -2, "color");		// USA spelling
     
 
     // LuaMain interface function return when function not called
     lua_pushnumber(L, LUA_FUNCTION_NOT_CALLED);
     lua_setfield(L, -2, "LUA_FUNCTION_NOT_CALLED");
     
-    create_SDL_Keymod_table(L);
-    lua_setfield(L, -2, "SDL_Keymod");
     create_SDL_SubSystems(L);
     lua_setfield(L, -2, "SDL_SubSystems");
-    create_SDL_RendererFlags(L);
-    lua_setfield(L, -2, "SDL_RendererFlags");
-    
-    lua_newtable(L);
-    lua_pushnumber(L, SDL_BLENDMODE_NONE);
-    lua_setfield(L, -2, "SDL_BLENDMODE_NONE");
-    lua_pushnumber(L, SDL_BLENDMODE_BLEND);
-    lua_setfield(L, -2, "SDL_BLENDMODE_BLEND");
-    lua_pushnumber(L, SDL_BLENDMODE_ADD);
-    lua_setfield(L, -2, "SDL_BLENDMODE_ADD");
-    lua_pushnumber(L, SDL_BLENDMODE_MOD);
-    lua_setfield(L, -2, "SDL_BLENDMODE_MOD");
-    lua_setfield(L, -2, "SDL_BlendMode");
+
 
     lua_pop(L, 1);	// drop the table
 }
@@ -1767,7 +1861,39 @@ void set_up_ui_ff_libraries(LuaMain* l, GameApplication& app)
     luabridge::push(L, &app);
     lua_setfield(L, -2, "app");
 
-	lua_pop(L, 1);	// drop the table
+    // add the 'colour' table to 'gulp'
+    create_and_return_colour_table(L);
+    lua_pushvalue(L, -1);    // copy colour
+    lua_setfield(L, -3, "colour");        // UK spelling
+    lua_setfield(L, -2, "color");        // USA spelling
+    
+    create_SDL_Keymod_table(L);
+    lua_setfield(L, -2, "SDL_Keymod");
+    
+    create_SDL_RendererFlags(L);
+    lua_setfield(L, -2, "SDL_RendererFlags");
+    
+    lua_newtable(L);
+    lua_pushnumber(L, SDL_BLENDMODE_NONE);
+    lua_setfield(L, -2, "SDL_BLENDMODE_NONE");
+    lua_pushnumber(L, SDL_BLENDMODE_BLEND);
+    lua_setfield(L, -2, "SDL_BLENDMODE_BLEND");
+    lua_pushnumber(L, SDL_BLENDMODE_ADD);
+    lua_setfield(L, -2, "SDL_BLENDMODE_ADD");
+    lua_pushnumber(L, SDL_BLENDMODE_MOD);
+    lua_setfield(L, -2, "SDL_BLENDMODE_MOD");
+    lua_setfield(L, -2, "SDL_BlendMode");
+    
+    create_SDL_JoystickCurrentPowerLevel_table(L);
+    lua_setfield(L, -2, "SDL_JoystickCurrentPowerLevel");
+    create_SDL_GameControllerAxis_table(L);
+    lua_setfield(L, -2, "SDL_GameControllerAxis");
+    create_SDL_GameControllerButton_table(L);
+    lua_setfield(L, -2, "SDL_GameControllerButton");
+
+    
+    
+    lua_pop(L, 1);	// drop the table
 }
 
 

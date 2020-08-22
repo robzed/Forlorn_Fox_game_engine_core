@@ -143,7 +143,8 @@ static const int cell_size_lower_limit = 8;
 // 0.79 - Added support for nogui
 // 0.80 - More fixes for nogui
 // 0.81 - moved setup_ff_lua_state() to main not ui
-#define FORLORN_FOX_ENGINE_VERSION 0.81
+// 0.82 - Added Joystick and Gamepad support
+#define FORLORN_FOX_ENGINE_VERSION 0.82
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif
