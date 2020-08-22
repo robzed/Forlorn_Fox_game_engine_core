@@ -1783,7 +1783,13 @@ void set_up_basic_ff_libraries(LuaMain* l)
     lua_pushnumber(L, COMPILE_BITS);
     lua_setfield(L, -2, "buildsize");
     
-
+    // add the 'colour' table to 'gulp'
+    // required for server as well, so basicx    // add the 'colour' table to 'gulp'
+    create_and_return_colour_table(L);
+    lua_pushvalue(L, -1);    // copy colour
+    lua_setfield(L, -3, "colour");        // UK spelling
+    lua_setfield(L, -2, "color");        // USA spelling
+    
     // LuaMain interface function return when function not called
     lua_pushnumber(L, LUA_FUNCTION_NOT_CALLED);
     lua_setfield(L, -2, "LUA_FUNCTION_NOT_CALLED");
@@ -1865,13 +1871,6 @@ void set_up_ui_ff_libraries(LuaMain* l, GameApplication& app)
 
     luabridge::push(L, &app);
     lua_setfield(L, -2, "app");
-
-    // add the 'colour' table to 'gulp'
-    create_and_return_colour_table(L);
-    lua_pushvalue(L, -1);    // copy colour
-    lua_setfield(L, -3, "colour");        // UK spelling
-    lua_setfield(L, -2, "color");        // USA spelling
-    
     
     lua_newtable(L);
     lua_pushnumber(L, SDL_BLENDMODE_NONE);
