@@ -1097,7 +1097,9 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
 
 		.addFunction("get_rgb_from_simple_colour", _get_rgb_from_simple_colour)
 
-
+        .beginClass <SDL_Joystick>("SDL_Joystick")
+        .endClass()
+    
       // joystick functions
       .addFunction("SDL_JoystickClose", SDL_JoystickClose)
       .addFunction("SDL_JoystickCurrentPowerLevel", SDL_JoystickCurrentPowerLevel)
@@ -1117,6 +1119,7 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
       .addFunction("SDL_JoystickNameForIndex", SDL_JoystickNameForIndex)
       .addFunction("SDL_JoystickNumAxes", SDL_JoystickNumAxes)
       .addFunction("SDL_JoystickNumBalls", SDL_JoystickNumBalls)
+      .addFunction("SDL_JoystickNumButtons", SDL_JoystickNumButtons)
       .addFunction("SDL_JoystickNumHats", SDL_JoystickNumHats)
       .addFunction("SDL_JoystickOpen", SDL_JoystickOpen)
       .addFunction("SDL_JoystickUpdate", SDL_JoystickUpdate)
