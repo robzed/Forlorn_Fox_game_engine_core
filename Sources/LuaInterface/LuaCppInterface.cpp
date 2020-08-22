@@ -725,7 +725,7 @@ static void set_up_basic_ff_cpp_bindings(lua_State *L, std::string base_table_na
 
     .addFunction("SetWindowTitle", SetWindowTitle)
 
-    // more SDL stuff
+    // more SDL stuff ... mostly for boot.lua
     .addFunction("SDL_GetModState", SDL_GetModState_helper)
     .addFunction("SDL_InitSubSystem", SDL_InitSubSystem)
     .addFunction("SDL_GetError", SDL_GetError)
@@ -1787,10 +1787,15 @@ void set_up_basic_ff_libraries(LuaMain* l)
     // LuaMain interface function return when function not called
     lua_pushnumber(L, LUA_FUNCTION_NOT_CALLED);
     lua_setfield(L, -2, "LUA_FUNCTION_NOT_CALLED");
-    
+
+    // needed in basic for boot.lua
+    create_SDL_Keymod_table(L);
+    lua_setfield(L, -2, "SDL_Keymod");
     create_SDL_SubSystems(L);
     lua_setfield(L, -2, "SDL_SubSystems");
-
+    // needed in basic for boot.lua
+    create_SDL_RendererFlags(L);
+    lua_setfield(L, -2, "SDL_RendererFlags");
 
     lua_pop(L, 1);	// drop the table
 }
@@ -1867,11 +1872,6 @@ void set_up_ui_ff_libraries(LuaMain* l, GameApplication& app)
     lua_setfield(L, -3, "colour");        // UK spelling
     lua_setfield(L, -2, "color");        // USA spelling
     
-    create_SDL_Keymod_table(L);
-    lua_setfield(L, -2, "SDL_Keymod");
-    
-    create_SDL_RendererFlags(L);
-    lua_setfield(L, -2, "SDL_RendererFlags");
     
     lua_newtable(L);
     lua_pushnumber(L, SDL_BLENDMODE_NONE);
