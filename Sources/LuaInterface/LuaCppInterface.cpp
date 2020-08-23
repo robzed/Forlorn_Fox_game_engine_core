@@ -1020,6 +1020,276 @@ int SDL_GameControllerAddMappingsFromFile_helper(const char* file)
     return SDL_GameControllerAddMappingsFromFile(file);
 }
 
+#define write_number(L, name) lua_pushnumber(L, name); lua_setfield(L, -2, #name);
+#define write_integer(L, name) lua_pushinteger(L, name); lua_setfield(L, -2, #name);
+
+// ------------------------------------------------------------------------------
+//
+// SDL_EventType
+//
+// ------------------------------------------------------------------------------
+static void create_SDL_EventType_table(lua_State *L)
+{
+    lua_newtable(L);
+
+    write_integer(L, SDL_CONTROLLER_BUTTON_INVALID);
+    write_integer(L, SDL_CONTROLLER_BUTTON_A);
+    write_integer(L, SDL_CONTROLLER_BUTTON_B);
+    write_integer(L, SDL_CONTROLLER_BUTTON_X);
+    write_integer(L, SDL_CONTROLLER_BUTTON_Y);
+    write_integer(L, SDL_CONTROLLER_BUTTON_BACK);
+    write_integer(L, SDL_CONTROLLER_BUTTON_GUIDE);
+    write_integer(L, SDL_CONTROLLER_BUTTON_START);
+    write_integer(L, SDL_CONTROLLER_BUTTON_LEFTSTICK);
+    write_integer(L, SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+    write_integer(L, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+    write_integer(L, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_UP);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+    write_integer(L, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+    write_integer(L, SDL_CONTROLLER_BUTTON_MAX);
+    
+    // SDL_EventType
+    write_integer(L, SDL_FIRSTEVENT);     /**< Unused (do not remove) */
+
+    /* Application events */
+    write_integer(L, SDL_QUIT); /**< User-requested quit */
+
+    /* These application events have special meaning on iOS, see README-ios.md for details */
+    write_integer(L, SDL_APP_TERMINATING);        /**< The application is being terminated by the OS
+                                     Called on iOS in applicationWillTerminate()
+                                     Called on Android in onDestroy()
+                                */
+    write_integer(L, SDL_APP_LOWMEMORY);          /**< The application is low on memory, free memory if possible.
+                                     Called on iOS in applicationDidReceiveMemoryWarning()
+                                     Called on Android in onLowMemory()
+                                */
+    write_integer(L, SDL_APP_WILLENTERBACKGROUND); /**< The application is about to enter the background
+                                     Called on iOS in applicationWillResignActive()
+                                     Called on Android in onPause()
+                                */
+    write_integer(L, SDL_APP_DIDENTERBACKGROUND); /**< The application did enter the background and may not get CPU for some time
+                                     Called on iOS in applicationDidEnterBackground()
+                                     Called on Android in onPause()
+                                */
+    write_integer(L, SDL_APP_WILLENTERFOREGROUND); /**< The application is about to enter the foreground
+                                     Called on iOS in applicationWillEnterForeground()
+                                     Called on Android in onResume()
+                                */
+    write_integer(L, SDL_APP_DIDENTERFOREGROUND); /**< The application is now interactive
+                                     Called on iOS in applicationDidBecomeActive()
+                                     Called on Android in onResume()
+                                */
+
+    /* Window events */
+    write_integer(L, SDL_WINDOWEVENT); /**< Window state change */
+    write_integer(L, SDL_SYSWMEVENT);             /**< System specific event */
+
+    /* Keyboard events */
+    write_integer(L, SDL_KEYDOWN); /**< Key pressed */
+    write_integer(L, SDL_KEYUP);                  /**< Key released */
+    write_integer(L, SDL_TEXTEDITING);            /**< Keyboard text editing (composition) */
+    write_integer(L, SDL_TEXTINPUT);              /**< Keyboard text input */
+    write_integer(L, SDL_KEYMAPCHANGED);          /**< Keymap changed due to a system event such as an
+                                     input language or keyboard layout change.
+                                */
+
+    /* Mouse events */
+    write_integer(L, SDL_MOUSEMOTION); /**< Mouse moved */
+    write_integer(L, SDL_MOUSEBUTTONDOWN);        /**< Mouse button pressed */
+    write_integer(L, SDL_MOUSEBUTTONUP);          /**< Mouse button released */
+    write_integer(L, SDL_MOUSEWHEEL);             /**< Mouse wheel motion */
+
+    /* Joystick events */
+    write_integer(L, SDL_JOYAXISMOTION); /**< Joystick axis motion */
+    write_integer(L, SDL_JOYBALLMOTION);          /**< Joystick trackball motion */
+    write_integer(L, SDL_JOYHATMOTION);           /**< Joystick hat position change */
+    write_integer(L, SDL_JOYBUTTONDOWN);          /**< Joystick button pressed */
+    write_integer(L, SDL_JOYBUTTONUP);            /**< Joystick button released */
+    write_integer(L, SDL_JOYDEVICEADDED);         /**< A new joystick has been inserted into the system */
+    write_integer(L, SDL_JOYDEVICEREMOVED);       /**< An opened joystick has been removed */
+
+    /* Game controller events */
+    write_integer(L, SDL_CONTROLLERAXISMOTION); /**< Game controller axis motion */
+    write_integer(L, SDL_CONTROLLERBUTTONDOWN);          /**< Game controller button pressed */
+    write_integer(L, SDL_CONTROLLERBUTTONUP);            /**< Game controller button released */
+    write_integer(L, SDL_CONTROLLERDEVICEADDED);         /**< A new Game controller has been inserted into the system */
+    write_integer(L, SDL_CONTROLLERDEVICEREMOVED);       /**< An opened Game controller has been removed */
+    write_integer(L, SDL_CONTROLLERDEVICEREMAPPED);      /**< The controller mapping was updated */
+
+    /* Touch events */
+    write_integer(L, SDL_FINGERDOWN);
+    write_integer(L, SDL_FINGERUP);
+    write_integer(L, SDL_FINGERMOTION);
+
+    /* Gesture events */
+    write_integer(L, SDL_DOLLARGESTURE);
+    write_integer(L, SDL_DOLLARRECORD);
+    write_integer(L, SDL_MULTIGESTURE);
+
+    /* Clipboard events */
+    write_integer(L, SDL_CLIPBOARDUPDATE); /**< The clipboard changed */
+
+    /* Drag and drop events */
+    write_integer(L, SDL_DROPFILE); /**< The system requests a file open */
+    write_integer(L, SDL_DROPTEXT);                 /**< text/plain drag-and-drop event */
+    write_integer(L, SDL_DROPBEGIN);                /**< A new set of drops is beginning (NULL filename) */
+    write_integer(L, SDL_DROPCOMPLETE);             /**< Current set of drops is now complete (NULL filename) */
+
+    /* Audio hotplug events */
+    write_integer(L, SDL_AUDIODEVICEADDED); /**< A new audio device is available */
+    write_integer(L, SDL_AUDIODEVICEREMOVED);        /**< An audio device has been removed. */
+
+    /* Render events */
+    write_integer(L, SDL_RENDER_TARGETS_RESET); /**< The render targets have been reset and their contents need to be updated */
+    write_integer(L, SDL_RENDER_DEVICE_RESET); /**< The device has been reset and all textures need to be recreated */
+
+    /** Events ::SDL_USEREVENT through ::SDL_LASTEVENT are for your use,
+     *  and should be allocated with SDL_RegisterEvents()
+     */
+    write_integer(L, SDL_USEREVENT);
+
+    /**
+     *  This last event is only for bounding internal arrays
+     */
+    write_integer(L, SDL_LASTEVENT);
+}
+
+// ------------------------------------------------------------------------------
+//
+// We bind all the Forlorn Fox event class in here, rather than spread them out over the project.
+//
+// ------------------------------------------------------------------------------
+static void set_up_event_cpp_bindings(lua_State *L, std::string base_table_name)
+{
+    using namespace luabridge;
+    getGlobalNamespace (L)
+    .beginNamespace (base_table_name.c_str())
+        .beginClass <SDL_CommonEvent>("SDL_CommonEvent")
+        .endClass()
+        .beginClass <SDL_WindowEvent>("SDL_WindowEvent")
+        .endClass()
+        .beginClass <SDL_KeyboardEvent>("SDL_KeyboardEvent")
+        .endClass()
+        .beginClass <SDL_TextEditingEvent>("SDL_TextEditingEvent")
+        .endClass()
+        .beginClass <SDL_TextInputEvent>("SDL_TextInputEvent")
+        .endClass()
+        .beginClass <SDL_MouseMotionEvent>("SDL_MouseMotionEvent")
+        .endClass()
+        .beginClass <SDL_MouseButtonEvent>("SDL_MouseButtonEvent")
+        .endClass()
+        .beginClass <SDL_MouseWheelEvent>("SDL_MouseWheelEvent")
+        .endClass()
+
+        .beginClass <SDL_JoyAxisEvent>("SDL_JoyAxisEvent")
+            .addData("type", &SDL_JoyAxisEvent::type)        /**< ::SDL_JOYAXISMOTION */
+            .addData("timestamp", &SDL_JoyAxisEvent::timestamp)   /**< In milliseconds, populated using SDL_GetTicks() */
+            .addData("which", &SDL_JoyAxisEvent::which) /**< The joystick instance id */
+            .addData("axis", &SDL_JoyAxisEvent::axis)         /**< The joystick axis index */
+            .addData("padding1", &SDL_JoyAxisEvent::padding1)
+            .addData("padding2", &SDL_JoyAxisEvent::padding2)
+            .addData("padding3", &SDL_JoyAxisEvent::padding3)
+            .addData("value", &SDL_JoyAxisEvent::value)       /**< The axis value (range: -32768 to 32767) */
+            .addData("padding4", &SDL_JoyAxisEvent::padding4)
+        .endClass()
+        .beginClass <SDL_JoyBallEvent>("SDL_JoyBallEvent")
+            .addData("type", &SDL_JoyBallEvent::type)        /**< ::SDL_JOYBALLMOTION */
+            .addData("timestamp", &SDL_JoyBallEvent::timestamp)   /**< In milliseconds, populated using SDL_GetTicks() */
+            .addData("which", &SDL_JoyBallEvent::which) /**< The joystick instance id */
+            .addData("ball", &SDL_JoyBallEvent::ball)         /**< The joystick trackball index */
+            .addData("padding1", &SDL_JoyBallEvent::padding1)
+            .addData("padding2", &SDL_JoyBallEvent::padding2)
+            .addData("padding3", &SDL_JoyBallEvent::padding3)
+            .addData("xrel", &SDL_JoyBallEvent::xrel)        /**< The relative motion in the X direction */
+            .addData("yrel", &SDL_JoyBallEvent::yrel)        /**< The relative motion in the Y direction */
+        .endClass()
+        .beginClass <SDL_JoyHatEvent>("SDL_JoyHatEvent")
+            .addData("type", &SDL_JoyHatEvent::type)        /**< ::SDL_JOYHATMOTION */
+            .addData("timestamp", &SDL_JoyHatEvent::timestamp)   /**< In milliseconds, populated using SDL_GetTicks() */
+            .addData("which", &SDL_JoyHatEvent::which) /**< The joystick instance id */
+            .addData("hat", &SDL_JoyHatEvent::hat)          /**< The joystick hat index */
+            .addData("value", &SDL_JoyHatEvent::value)        /**< The hat position value.
+                         *   \sa ::SDL_HAT_LEFTUP ::SDL_HAT_UP ::SDL_HAT_RIGHTUP
+                         *   \sa ::SDL_HAT_LEFT ::SDL_HAT_CENTERED ::SDL_HAT_RIGHT
+                         *   \sa ::SDL_HAT_LEFTDOWN ::SDL_HAT_DOWN ::SDL_HAT_RIGHTDOWN
+                         *
+                         *   Note that zero means the POV is centered.
+                         */
+            .addData("padding1", &SDL_JoyHatEvent::padding1)
+            .addData("padding2", &SDL_JoyHatEvent::padding2)
+        .endClass()
+
+        .beginClass <SDL_JoyButtonEvent>("SDL_JoyButtonEvent")
+            .addData("type", &SDL_JoyButtonEvent::type)        /**< ::SDL_JOYBUTTONDOWN or ::SDL_JOYBUTTONUP */
+            .addData("timestamp", &SDL_JoyButtonEvent::timestamp)   /**< In milliseconds, populated using SDL_GetTicks() */
+            .addData("which", &SDL_JoyButtonEvent::which) /**< The joystick instance id */
+            .addData("button", &SDL_JoyButtonEvent::button)       /**< The joystick button index */
+            .addData("state", &SDL_JoyButtonEvent::state)        /**< ::SDL_PRESSED or ::SDL_RELEASED */
+            .addData("padding1", &SDL_JoyButtonEvent::padding1)
+            .addData("padding2", &SDL_JoyButtonEvent::padding2)
+        .endClass()
+        
+        .beginClass <SDL_JoyDeviceEvent>("SDL_JoyDeviceEvent")
+            .addData("type", &SDL_JoyDeviceEvent::type)        /**< ::SDL_JOYDEVICEADDED or ::SDL_JOYDEVICEREMOVED */
+            .addData("timestamp", &SDL_JoyDeviceEvent::timestamp)   /**< In milliseconds, populated using SDL_GetTicks() */
+            .addData("which", &SDL_JoyDeviceEvent::which)       /**< The joystick device index for the ADDED event, instance id for the REMOVED event */
+        .endClass()
+
+        .beginClass <SDL_ControllerAxisEvent>("SDL_ControllerAxisEvent")
+        .endClass()
+        .beginClass <SDL_ControllerButtonEvent>("SDL_ControllerButtonEvent")
+        .endClass()
+        .beginClass <SDL_ControllerDeviceEvent>("SDL_ControllerDeviceEvent")
+        .endClass()
+        .beginClass <SDL_AudioDeviceEvent>("SDL_AudioDeviceEvent")
+        .endClass()
+        .beginClass <SDL_QuitEvent>("SDL_QuitEvent")
+        .endClass()
+        .beginClass <SDL_UserEvent>("SDL_UserEvent")
+        .endClass()
+        .beginClass <SDL_SysWMEvent>("SDL_SysWMEvent")
+        .endClass()
+        .beginClass <SDL_TouchFingerEvent>("SDL_TouchFingerEvent")
+        .endClass()
+        .beginClass <SDL_MultiGestureEvent>("SDL_MultiGestureEvent")
+        .endClass()
+        .beginClass <SDL_DollarGestureEvent>("SDL_DollarGestureEvent")
+        .endClass()
+        .beginClass <SDL_DropEvent>("SDL_DropEvent")
+        .endClass()
+
+    .beginClass <SDL_Event>("SDL_Event")
+            .addData("type", &SDL_Event::type)
+            .addData("common", &SDL_Event::common)         /**< Common event data */
+            .addData("window", &SDL_Event::window)         /**< Window event data */
+            .addData("key", &SDL_Event::key)               /**< Keyboard event data */
+            .addData("edit", &SDL_Event::edit)             /**< Text editing event data */
+            .addData("text", &SDL_Event::text)             /**< Text input event data */
+            .addData("motion", &SDL_Event::motion)         /**< Mouse motion event data */
+            .addData("button", &SDL_Event::button)         /**< Mouse button event data */
+            .addData("wheel", &SDL_Event::wheel)           /**< Mouse wheel event data */
+            .addData("jaxis", &SDL_Event::jaxis)           /**< Joystick axis event data */
+            .addData("jball", &SDL_Event::jball)           /**< Joystick ball event data */
+            .addData("jhat", &SDL_Event::jhat)             /**< Joystick hat event data */
+            .addData("jbutton", &SDL_Event::jbutton)       /**< Joystick button event data */
+            .addData("jdevice", &SDL_Event::jdevice)       /**< Joystick device change event data */
+            .addData("caxis", &SDL_Event::caxis)           /**< Game Controller axis event data */
+            .addData("cbutton", &SDL_Event::cbutton)       /**< Game Controller button event data */
+            .addData("cdevice", &SDL_Event::cdevice)       /**< Game Controller device event data */
+            .addData("adevice", &SDL_Event::adevice)       /**< Audio device event data */
+            .addData("quit", &SDL_Event::quit)             /**< Quit request event data */
+            .addData("user", &SDL_Event::user)             /**< Custom event data */
+            .addData("syswm", &SDL_Event::syswm)           /**< System dependent window event data */
+            .addData("tfinger", &SDL_Event::tfinger)       /**< Touch finger event data */
+            .addData("mgesture", &SDL_Event::mgesture)     /**< Gesture event data */
+            .addData("dgesture", &SDL_Event::dgesture)     /**< Gesture event data */
+            .addData("drop", &SDL_Event::drop)             /**< Drag and drop event data */
+        .endClass()
+    .endNamespace();
+}
+
 // ------------------------------------------------------------------------------
 //
 // We bind all the Forlorn Fox UI classes in here, rather than spread them out over the project.
@@ -1592,8 +1862,6 @@ static void create_and_return_colour_table(lua_State *L)
 	lua_setfield(L, -2, "hot_pink_means_transparent");
 }
 
-#define write_number(L, name) lua_pushnumber(L, name); lua_setfield(L, -2, #name);
-#define write_integer(L, name) lua_pushinteger(L, name); lua_setfield(L, -2, #name);
 
 static void create_SDL_Keymod_table(lua_State *L)
 {
@@ -1820,7 +2088,8 @@ void set_up_main_thread_libraries(LuaMain* l)
     LuaMain& L = *l;
    
    set_up_main_ff_cpp_bindings(L, master_table_name+"_cpp");
-   
+   set_up_event_cpp_bindings(L, master_table_name+"_cpp");
+
    // get the table that's just been created and add stuff manually..
    L.return_namespace_table(master_table_name);
    
@@ -1829,6 +2098,9 @@ void set_up_main_thread_libraries(LuaMain* l)
    luabridge::push(L, &L);
    lua_setfield(L, -2, "lua_main");
    
+    create_SDL_EventType_table(L);
+    lua_setfield(L, -2, "SDL_EventType");
+    
    lua_pop(L, 1);   // drop the table
 }
 

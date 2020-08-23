@@ -333,7 +333,8 @@ int GameApplication::main(int argc, char* argv[])
             else
             {
                 lua_pushnumber(lua_user_interface, event.type);
-                run_gulp_function_if_exists(&lua_user_interface, "unknown_event", 1);
+                luabridge::push(lua_user_interface, &event);
+                run_gulp_function_if_exists(&lua_user_interface, "unknown_event", 2);
             }
         }
 
