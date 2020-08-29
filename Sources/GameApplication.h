@@ -88,8 +88,6 @@ public:
 
     void setup_ff_lua_state(LuaMain* L);
 
-	void exit_glyph_editor();
-
 	DrawList* get_absolute_draw_list() { return &absolute_draw_list; }
 	DrawList* get_status_draw_list() { return &status_draw_list; }
 	DrawList* get_multiplayer_status_draw_list() { return &multiplayer_status_draw_list; }
