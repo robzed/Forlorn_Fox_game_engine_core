@@ -186,7 +186,7 @@ SDL_Texture* MyGraphics_render::common_transform(int &x, int &y, int character,
     // which at 256 per texture max, means 24 textures for graphics (256 characters each)
 
     GameTexInfo* gti;
-    if(character < low_value_characters)
+    if(character < low_value_characters and character >= 0)
     {
         gti = &low_textures[character/characters_per_set];
     }
@@ -258,7 +258,7 @@ SDL_Texture* MyGraphics_render::common_transform(int &x, int &y, int character,
 
 void MyGraphics_render::set_texture(int character, GameTexInfo& gti)
 {
-    if(character < low_value_characters)
+    if(character < low_value_characters and character >= 0)
     {
         low_textures[character/characters_per_set] = gti;
     }
@@ -274,7 +274,7 @@ void MyGraphics_render::set_texture(int character, GameTexInfo& gti)
 }
 GameTexInfo* MyGraphics_render::get_texture(int character)
 {
-    if(character < low_value_characters)
+    if(character < low_value_characters and character >= 0)
     {
         return &low_textures[character/characters_per_set];
     }
