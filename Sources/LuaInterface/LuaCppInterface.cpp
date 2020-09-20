@@ -1512,11 +1512,16 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
 		.addFunction("print_glyph", print_glyph)
 		.addFunction("print_glyph_ex", print_glyph_ex)
 
+        .beginClass<GameTexInfo>("GameTexInfo")
+        .endClass()
+
 		.deriveClass <MyGraphics_render, MyGraphics> ("MyGraphics_render")
 			.addFunction("load_textures_from_glyph_set", &MyGraphics_render::load_textures_from_glyph_set)
 			.addFunction("create_texture_set", &MyGraphics_render::create_texture_set)
 			.addFunction("update_texture_set_glyph", &MyGraphics_render::update_texture_set_glyph)
 			.addFunction("update_texture_set_pixel", &MyGraphics_render::update_texture_set_pixel)
+            .addFunction("get_GameTexInfo", &MyGraphics_render::get_GameTexInfo)
+            .addFunction("overwrite_GameTexInfo", &MyGraphics_render::overwrite_GameTexInfo)
 		.endClass()
 
 

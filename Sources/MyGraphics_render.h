@@ -47,28 +47,21 @@ const int low_value_characters = 0x400;
 const int number_of_low_value_sets = low_value_characters / characters_per_set;
 const int number_of_private_use_sets = ((last_private_use+1) - first_private_use) / characters_per_set;
 
+
+// https://stackoverflow.com/questions/12340810/using-custom-deleter-with-stdshared-ptr
+typedef std::shared_ptr<SDL_Texture> shared_SDL_Texture;
+void Delete_SDLTexture(SDL_Texture* t);
+
 struct GameTexInfo {
     // ensure always constructed ok
     GameTexInfo():characters_per_line(0), glyph_size(0), number_lines(0), texture(0)
     {
     }
-    // make sure always deleted ok
-    ~GameTexInfo()
-    {
-        if(texture)
-        {
-            SDL_DestroyTexture(texture);
-        }
-    }
-    void unlink_textures()
-    {
-        texture = 0;
-    }
 
     unsigned char characters_per_line;  // how many cells per line in texture
     unsigned char glyph_size;           // 16x16 or 32x32 generally
     unsigned char number_lines;         // check for out of bounds
-    SDL_Texture* texture;
+    shared_SDL_Texture texture;         // the texture ... can be shared between instances
 };
 
 class MyGraphics_render : public MyGraphics {
@@ -139,6 +132,9 @@ public:
     virtual void SetTextureAlphaMod(int base_character_code, Uint8 alpha);
     virtual void set_viewport(Viewport& vp);
     //virtual void set_glyph_size_in_pixels(int pixels);
+    GameTexInfo* get_GameTexInfo(int character);
+    void overwrite_GameTexInfo(int character, GameTexInfo* gti);
+    
 private:
 	// private functions
 	void drawBlank(int x, int y, int width, int height, const SDL_Colour& colour);
@@ -149,8 +145,7 @@ private:
     SDL_Texture* common_transform(int &x, int &y, int character, const SDL_Colour& fg_colour,
                          SDL_Rect &srcRect, int width, int height);
 	
-    void set_texture(int character, GameTexInfo& gti);
-    GameTexInfo* get_texture(int character);
+    void set_GameTexInfo(int character, GameTexInfo& gti);
     
     int line_to_y(pos_t line);
 	int column_to_x(pos_t column);

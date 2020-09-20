@@ -45,6 +45,12 @@
 using luabridge::LuaRef;
 
 
+void Delete_SDLTexture(SDL_Texture* t)
+{
+    //printf("SDL_DestroyTexture %p", t);
+    if(t) { SDL_DestroyTexture(t); }
+}
+
 
 void MyGraphics_render::go_to(pos_t line, pos_t column)
 {
@@ -240,7 +246,7 @@ SDL_Texture* MyGraphics_render::common_transform(int &x, int &y, int character,
         cell_size_image*width, cell_size_image*height };
     srcRect = new_srcRect;
     
-    SDL_Texture* tex = gti->texture;
+    SDL_Texture* tex = gti->texture.get();
 
 // @todo: Disable this
 #define WARNING_ABOUT_SDL_SETTEXTURECOLORMOD_ERROR 1
@@ -255,8 +261,15 @@ SDL_Texture* MyGraphics_render::common_transform(int &x, int &y, int character,
     return tex;
 }
 
+void MyGraphics_render::overwrite_GameTexInfo(int character, GameTexInfo* gti)
+{
+    if(gti)
+    {
+        set_GameTexInfo(character, *gti);
+    }
+}
 
-void MyGraphics_render::set_texture(int character, GameTexInfo& gti)
+void MyGraphics_render::set_GameTexInfo(int character, GameTexInfo& gti)
 {
     if(character < low_value_characters and character >= 0)
     {
@@ -272,7 +285,7 @@ void MyGraphics_render::set_texture(int character, GameTexInfo& gti)
         other_texture_store[character / characters_per_set] = gti;
     }
 }
-GameTexInfo* MyGraphics_render::get_texture(int character)
+GameTexInfo* MyGraphics_render::get_GameTexInfo(int character)
 {
     if(character < low_value_characters and character >= 0)
     {
@@ -574,7 +587,7 @@ void MyGraphics_render::load_textures_from_glyph_set(luabridge::LuaRef glyph_set
     
         /* create our texture */
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, glyph_set["render_quality"]);
-        gti.texture = SDL_CreateTextureFromSurface(renderer, surface);
+        gti.texture = shared_SDL_Texture(SDL_CreateTextureFromSurface(renderer, surface), Delete_SDLTexture);
         //gti.texture = SDL_CreateTextureFromSurface(renderer, converted);
 
         if (gti.texture == 0)
@@ -585,14 +598,13 @@ void MyGraphics_render::load_textures_from_glyph_set(luabridge::LuaRef glyph_set
         else
         {
             /* set blend mode for our texture */
-            SDL_SetTextureBlendMode(gti.texture, SDL_BLENDMODE_BLEND);
+            SDL_SetTextureBlendMode(gti.texture.get(), SDL_BLENDMODE_BLEND);
         }
 
         SDL_FreeSurface(surface);
         //SDL_FreeSurface(converted);
 
-    set_texture(glyph_set["character_base_code"], gti);
-    gti.unlink_textures();
+    set_GameTexInfo(glyph_set["character_base_code"], gti);
 }
 
 
@@ -618,7 +630,7 @@ void MyGraphics_render::create_texture_set(luabridge::LuaRef glyph_set)
 	//{
 		/* create our texture */
 
-		gti.texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, gti.characters_per_line*gti.glyph_size, gti.number_lines*gti.glyph_size);
+		gti.texture = shared_SDL_Texture(SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, gti.characters_per_line*gti.glyph_size, gti.number_lines*gti.glyph_size), Delete_SDLTexture);
 
 		if (gti.texture == 0)
 		{
@@ -628,16 +640,15 @@ void MyGraphics_render::create_texture_set(luabridge::LuaRef glyph_set)
 		else
 		{
 			/* set blend mode for our texture */
-			SDL_SetTextureBlendMode(gti.texture, SDL_BLENDMODE_BLEND);
+			SDL_SetTextureBlendMode(gti.texture.get(), SDL_BLENDMODE_BLEND);
 		}
 
-    set_texture(glyph_set["character_base_code"], gti);
-    gti.unlink_textures();
+    set_GameTexInfo(glyph_set["character_base_code"], gti);
 }
 
 void MyGraphics_render::update_texture_set_pixel(int base_character_code, int glyph, int glyph_x, int glyph_y, Uint32 pixel)
 {
-    GameTexInfo* gti = get_texture(base_character_code);
+    GameTexInfo* gti = get_GameTexInfo(base_character_code);
 	if(not gti)
 	{
 		Utilities::fatalError("Invalid texture set in update_texture_set_pixel()");
@@ -669,7 +680,7 @@ void MyGraphics_render::update_texture_set_pixel(int base_character_code, int gl
 		}
 
 		// write the pixel directly into the texture
-		SDL_UpdateTexture(gti->texture, &location, &newpixel, 4);
+		SDL_UpdateTexture(gti->texture.get(), &location, &newpixel, 4);
 
 	}
 
@@ -677,7 +688,7 @@ void MyGraphics_render::update_texture_set_pixel(int base_character_code, int gl
 
 void MyGraphics_render::update_texture_set_glyph(int base_character_code, int glyph, int source_glyph_size, SDL_Surface* source, int source_glyph, int source_characters_per_line)
 {
-    GameTexInfo* gti = get_texture(base_character_code);
+    GameTexInfo* gti = get_GameTexInfo(base_character_code);
     if(not gti)
 	{
 		Utilities::fatalError("Invalid texture set in update_texture_set_glyph()");
@@ -755,7 +766,7 @@ void MyGraphics_render::update_texture_set_glyph(int base_character_code, int gl
 		//void* source_pointer = source->pixels + (source_rect.y * source->pitch) + (source_rect.x * source->format->BytesPerPixel);
 
 		// write the pixel directly into the texture
-		SDL_UpdateTexture(gti->texture, &location, converted->pixels, converted->pitch);
+		SDL_UpdateTexture(gti->texture.get(), &location, converted->pixels, converted->pitch);
 
 		SDL_FreeSurface(converted);
 		SDL_FreeSurface(surface);
@@ -923,13 +934,13 @@ void MyGraphics_render::RenderCopy(SDL_Texture* texture, SDL_Rect* source, SDL_R
 
 void MyGraphics_render::SetTextureAlphaMod(int base_character_code, Uint8 alpha)
 {
-    GameTexInfo* gti = get_texture(base_character_code);
+    GameTexInfo* gti = get_GameTexInfo(base_character_code);
     if(not gti)
     {
         Utilities::fatalError("Invalid texture set in SetTextureAlphaMod()");
         return;
     }
 
-    SDL_SetTextureAlphaMod(gti->texture, alpha);
+    SDL_SetTextureAlphaMod(gti->texture.get(), alpha);
 }
 
