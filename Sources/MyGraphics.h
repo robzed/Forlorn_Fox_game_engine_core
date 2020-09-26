@@ -46,6 +46,9 @@
 
 //static const int text_size = 32;
 
+// forward declaration
+struct GameTexInfo;
+
 class MyGraphics {
 public:
 	virtual ~MyGraphics() = 0;	// still have to provide implementation for pure virtual
@@ -101,6 +104,9 @@ public:
 
     virtual void SetTextureAlphaMod(int base_character_code, Uint8 alpha) = 0;
     virtual void set_viewport(Viewport& vp) = 0;
+
+    virtual GameTexInfo* get_GameTexInfo(int character) = 0;
+    virtual void overwrite_GameTexInfo(int character, GameTexInfo* gti) = 0;
 
 private:
 

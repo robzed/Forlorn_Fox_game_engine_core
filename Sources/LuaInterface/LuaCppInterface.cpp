@@ -1507,6 +1507,8 @@ static void set_up_ui_ff_cpp_bindings(lua_State *L, std::string base_table_name)
             //.addFunction("RenderSetClipRect", &MyGraphics::RenderSetClipRect)
             //.addFunction("RenderGetClipRect", &MyGraphics::RenderGetClipRect)
             .addFunction("RenderCopy", &MyGraphics::RenderCopy)
+            .addFunction("get_GameTexInfo", &MyGraphics::get_GameTexInfo)
+            .addFunction("overwrite_GameTexInfo", &MyGraphics::overwrite_GameTexInfo)
 		.endClass()
 
 		.addFunction("print_string", print_cstring)
