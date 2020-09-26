@@ -592,6 +592,16 @@ void PresentationMaze::set_glyph(int line, int column, int glyph, int layer, int
 
 }
 
+void PresentationMaze::update_glyph(int line, int column, int glyph)
+{
+	check(line, column);
+
+	if(current_maze_element_pointers[line][column] != nullptr)
+	{
+		current_maze_element_pointers[line][column]->update_glyph(glyph);
+	}
+}
+
 void PresentationMaze::set_rotation(int line, int column, double angle)
 {
 	check(line, column);

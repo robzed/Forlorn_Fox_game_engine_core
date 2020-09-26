@@ -37,6 +37,8 @@
 #include "LuaBridge.h"
 #include "map"
 
+#include <memory>			// for shared_ptr
+
 struct GameTexInfo;
 
 // constants for character sets

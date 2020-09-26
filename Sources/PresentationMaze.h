@@ -85,6 +85,7 @@ public:
 	
 	int get_glyph(int line, int column);
 	void set_glyph(int line, int column, int value, int layer = 0, int cell_width = 1, int cell_height = 1);
+	void update_glyph(int line, int column, int glyph);
 	
 	void set_rotation(int line, int column, double angle);
 

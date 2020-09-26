@@ -145,8 +145,9 @@ static const int cell_size_lower_limit = 8;
 // 0.81 - moved setup_ff_lua_state() to main not ui
 // 0.82 - Added Joystick and Gamepad support
 // 0.83 - Enhanced unknown event support
-// 0.84 - Mpre character flexibility
-#define FORLORN_FOX_ENGINE_VERSION 0.84
+// 0.84 - More character flexibility
+// 0.85 - PresentationMaze::update_glyph()
+#define FORLORN_FOX_ENGINE_VERSION 0.85
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif
