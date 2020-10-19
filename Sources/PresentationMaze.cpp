@@ -229,7 +229,8 @@ void PresentationMaze::load_current_maze(lua_State* L)
             	int glyph = luaL_optint(L, -1, ' ');
             	if(glyph != 0x20)
             	{
-            		current_maze_element_pointers[line][column] = new MazeDrawListElement(get_maze_draw_list(line, column), glyph, glyph==0x20?0:100);
+            		// layer defaults to 100, will be updated for floor glyphs in map_transform()
+            		current_maze_element_pointers[line][column] = new MazeDrawListElement(get_maze_draw_list(line, column), glyph, 100);
             	}
             }
 
@@ -550,14 +551,8 @@ void PresentationMaze::render_map_data(MyGraphics& gr, int map_line, int map_col
 }
 
 
-void PresentationMaze::set_view_layer(int player, int line, int column, int layer)
+void PresentationMaze::set_view_layer(int line, int column, int layer)
 {
-	if(player != 0)
-	{
-		Utilities::debugMessage("Multiplayer not supported in set_view_layer()");
-		Utilities::fatalError("Death has stalked your program once again", 42200);
-	}
-
 	view_layer[line][column] = layer;
 }
 
@@ -599,6 +594,16 @@ void PresentationMaze::update_glyph(int line, int column, int glyph)
 	if(current_maze_element_pointers[line][column] != nullptr)
 	{
 		current_maze_element_pointers[line][column]->update_glyph(glyph);
+	}
+}
+
+void PresentationMaze::update_layer(int line, int column, int layer)
+{
+	check(line, column);
+
+	if(current_maze_element_pointers[line][column] != nullptr)
+	{
+		current_maze_element_pointers[line][column]->update_layer(layer);
 	}
 }
 

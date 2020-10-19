@@ -147,7 +147,8 @@ static const int cell_size_lower_limit = 8;
 // 0.83 - Enhanced unknown event support
 // 0.84 - More character flexibility
 // 0.85 - PresentationMaze::update_glyph()
-#define FORLORN_FOX_ENGINE_VERSION 0.85
+// 0.86 - PresentationMaze::update_layer()
+#define FORLORN_FOX_ENGINE_VERSION 0.86
 const double forlorn_fox_engine_version = FORLORN_FOX_ENGINE_VERSION;
 
 #endif

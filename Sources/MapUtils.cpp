@@ -154,6 +154,8 @@ void MapUtils::map_transform(PresentationMaze* maze, luabridge::LuaRef char_code
 				// make all space like characters transparent
 				maze->set_wall_transparency(line, column, 0);
 
+				// update the view layer for everything that is walkable to 0
+				maze->update_layer(line, column, 0);
 			}
 
 		}

@@ -86,6 +86,7 @@ public:
 	int get_glyph(int line, int column);
 	void set_glyph(int line, int column, int value, int layer = 0, int cell_width = 1, int cell_height = 1);
 	void update_glyph(int line, int column, int glyph);
+	void update_layer(int line, int column, int layer);
 	
 	void set_rotation(int line, int column, double angle);
 
@@ -102,7 +103,7 @@ public:
 	MazeDrawList* get_maze_draw_list(int line, int column) { return &(maze_draw_list[line][column]); }
 	DrawList* get_mobs_draw_list();
 
-	void set_view_layer(int player, int line, int column, int layer);
+	void set_view_layer(int line, int column, int layer);
 	
 	void set_wall_transparency(int line, int column, unsigned int directions_map);
 	bool line_of_sight(pos_t line1, pos_t column1, pos_t line2, pos_t column2);
